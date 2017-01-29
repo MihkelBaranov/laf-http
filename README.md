@@ -11,7 +11,7 @@ npm:
 $ npm i -g laf-http
 ```
 ### Example
-```
+```typescript
 import { Http, Request, Response } from "laf-http"
 
 let server = new Http();
