@@ -8,7 +8,7 @@ $ yarn add laf-http
 ```
 npm:
 ```sh
-$ npm i -g laf-http
+$ npm i --save laf-http
 ```
 ### Example
 ```typescript
