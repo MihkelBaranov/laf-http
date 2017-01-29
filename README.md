@@ -1,7 +1,16 @@
 # LAF-HTTP
 Simple express like http module
 
-Example
+### Installation
+yarn:
+```sh
+$ yarn add laf-http
+```
+npm:
+```sh
+$ npm i -g laf-http
+```
+### Example
 ```
 import { Http, Request, Response } from "laf-http"
 
