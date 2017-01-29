@@ -78,6 +78,7 @@ export class Http {
     private _split(path): Array<any> {
         return path.endsWith("/") ? path.slice(0, -1).split("/") : path.split("/");
     }
+
     private _route(req: Request) {
         return this._routes.find(route => {
             if (req.method === route.method) {
@@ -100,8 +101,15 @@ export class Http {
 
     private _return(res: Response) {
         return (status = 200, message) => {
-            res.writeHead(status, "Content-Type", "application/json");
-            res.write(JSON.stringify({ message: message, status: status }));
+            switch (typeof message) {
+                case "object":
+                    res.writeHead(status, "Content-Type", "application/json");
+                    res.write(JSON.stringify(message));
+                    break;
+                default:
+                    res.writeHead(status, "Content-Type", "text/plain");
+                    res.write(message);
+            }
             return res.end();
         };
     }
