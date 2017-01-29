@@ -1,31 +1,124 @@
 import { IncomingMessage, ServerResponse, Server, createServer } from "http";
 import { parse } from "url";
 
+/**
+ * Response interface
+ * 
+ * @export
+ * @interface Response
+ * @extends {ServerResponse}
+ */
 export interface Response extends ServerResponse {
+    /**
+     * 
+     * 
+     * @param {any} [status]
+     * @param {any} [message]
+     * 
+     * @memberOf Response
+     */
     return(status?, message?): void;
 }
 
+/**
+ * Request interface
+ * 
+ * @export
+ * @interface Request
+ * @extends {IncomingMessage}
+ */
 export interface Request extends IncomingMessage {
+    /**
+     * Query object
+     * 
+     * @type {*}
+     * @memberOf Request
+     */
     query: any;
+    /**
+     * Parameters object
+     * 
+     * @type {*}
+     * @memberOf Request
+     */
     params: any;
+    /**
+     * Parsed url
+     * 
+     * @type {*}
+     * @memberOf Request
+     */
     parsed: any;
+    /**
+     * Route object
+     * 
+     * @type {*}
+     * @memberOf Request
+     */
     route: any;
 }
 
+/**
+ * LAF-HTTP
+ * Simple express like http library for rest api services
+ * 
+ * @export
+ * @class Http
+ */
 export class Http {
+    /**
+     * Store global middleware
+     * 
+     * @private
+     * @type {*}
+     * @memberOf Http
+     */
     private _middleware: any = [];
-    private _httpMethods: any = ["POST", "GET", "PUT", "DELETE"];
+    /**
+     * Store registered routes
+     * 
+     * @private
+     * @type {Array<any>}
+     * @memberOf Http
+     */
     private _routes: Array<any> = [];
+    /**
+     * Pass through middleware
+     * 
+     * @private
+     * @type {boolean}
+     * @memberOf Http
+     */
     private _next: boolean = false;
 
+    /**
+     * Get request handler
+     * @readonly
+     * @type {*}
+     * @memberOf Http
+     */
     get handler(): any {
         return this.request.bind(this);
     }
 
+    /**
+     * Pass through middleware
+     * 
+     * @memberOf Http
+     */
     public next() {
         this._next = true;
     }
 
+    /**
+     * Request handler
+     * 
+     * @param {Request} req
+     * @param {Response} res
+     * @returns
+     * 
+     * @memberOf Http
+     */
     public request(req: Request, res: Response) {
         req.params = {};
         req.parsed = parse(req.url, true);
@@ -61,44 +154,89 @@ export class Http {
 
     }
 
+    /**
+     * Register global middleware
+     * 
+     * @param {any} middleware
+     * 
+     * @memberOf Http
+     */
     public use(middleware) {
         this._middleware.push(middleware);
     }
 
+    /**
+     * Register routes
+     * 
+     * @param {any} routes
+     * 
+     * @memberOf Http
+     */
     public register(routes) {
         for (let route of routes) {
             this._routes.push(route);
         }
     }
 
+    /**
+     * Start server
+     * 
+     * @param {number} port
+     * 
+     * @memberOf Http
+     */
     public listen(port: number) {
         createServer(this.handler).listen(port);
     }
 
-    private _split(path): Array<any> {
-        return path.endsWith("/") ? path.slice(0, -1).split("/") : path.split("/");
+    /**
+     * Remove trailing slash
+     * 
+     * @private
+     * @param {any} path
+     * @returns {string}
+     * 
+     * @memberOf Http
+     */
+    private slashed(path): string {
+        return path.endsWith("/") ? path.slice(0, -1) : path;
     }
 
+    /**
+     * Find route
+     * 
+     * @private
+     * @param {Request} req
+     * @returns
+     * 
+     * @memberOf Http
+     */
     private _route(req: Request) {
         return this._routes.find(route => {
-            if (req.method === route.method) {
-                let route_path = this._split(route.path);
-                let requested_path = this._split(req.url);
-                let params = route.path.match(/:([a-z]+)/gi);
-                if (route_path.length === requested_path.length && route_path[1] === requested_path[1]) {
-                    if (params) {
-                        for (let param of params) {
-                            req.params[param.replace(":", "")] = requested_path[route_path.findIndex(p => p === param)];
-                        }
-                    }
-                    return true;
+            let regex = new RegExp(this.slashed(route.path).replace(/:[^\s/]+/g, "([\\w-]+)"));
+
+            let matches = this.slashed(req.url).match(regex);
+
+            if (matches && matches[0] === matches["input"]) {
+                let params = route.path.match(/:([a-z]+)/gi).map(e => e.replace(":", ""));
+                for (let k in params) {
+                    req.params[params[k]] = matches[parseInt(k) + 1];
                 }
-                return false;
+
+                return route;
             }
-            return false;
         });
     }
 
+    /**
+     * Return wrapper for req.return
+     * 
+     * @private
+     * @param {Response} res
+     * @returns
+     * 
+     * @memberOf Http
+     */
     private _return(res: Response) {
         return (status = 200, message) => {
             switch (typeof message) {
