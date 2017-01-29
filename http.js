@@ -80,8 +80,15 @@ class Http {
     }
     _return(res) {
         return (status = 200, message) => {
-            res.writeHead(status, "Content-Type", "application/json");
-            res.write(JSON.stringify({ message: message, status: status }));
+            switch (typeof message) {
+                case "object":
+                    res.writeHead(status, "Content-Type", "application/json");
+                    res.write(JSON.stringify(message));
+                    break;
+                default:
+                    res.writeHead(status, "Content-Type", "text/plain");
+                    res.write(message);
+            }
             return res.end();
         };
     }
