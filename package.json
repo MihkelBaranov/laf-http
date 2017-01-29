@@ -1,0 +1,19 @@
+{
+  "name": "laf-http",
+  "version": "1.0.0",
+  "description": "Light as f express like http module",
+  "main": "http.js",
+  "types": "http.d.ts",
+  "repository": "https://github.com/MihkelBaranov/laf-http",
+  "author": "Mihkel Baranov",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.10"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.0"
+  }
+}
