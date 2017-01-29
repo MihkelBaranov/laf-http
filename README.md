@@ -1,5 +1,5 @@
 # LAF-HTTP
-Simple express like http module
+Simple _express like_ http module built with Typescript
 
 ### Installation
 yarn:
