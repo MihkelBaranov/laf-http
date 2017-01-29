@@ -1,7 +1,7 @@
 {
   "name": "laf-http",
   "version": "1.0.1",
-  "description": "Light as f express like http module",
+  "description": "Lightweight  express like http module for building rest api services",
   "main": "http.js",
   "types": "http.d.ts",
   "repository": "https://github.com/MihkelBaranov/laf-http",
