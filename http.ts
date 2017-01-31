@@ -217,7 +217,7 @@ export class Http {
 
             let matches = this.slashed(req.url).match(regex);
 
-            if (matches && matches[0] === matches["input"]) {
+            if (matches && matches[0] === matches["input"] && route.method === req.method) {
                 let params = route.path.match(/:([a-z]+)/gi).map(e => e.replace(":", ""));
                 for (let k in params) {
                     req.params[params[k]] = matches[parseInt(k) + 1];
