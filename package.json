@@ -1,6 +1,6 @@
 {
   "name": "laf-http",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Lightweight  express like http module for building rest api services",
   "main": "http.js",
   "types": "http.d.ts",

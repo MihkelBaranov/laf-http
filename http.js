@@ -171,11 +171,11 @@ class Http {
         return (status = 200, message) => {
             switch (typeof message) {
                 case "object":
-                    res.writeHead(status, "Content-Type", "application/json");
+                    res.writeHead(status, { "Content-Type": "application/json" });
                     res.write(JSON.stringify(message));
                     break;
                 default:
-                    res.writeHead(status, "Content-Type", "text/plain");
+                    res.writeHead(status, { "Content-Type": "text/plain" });
                     res.write(message);
             }
             return res.end();
