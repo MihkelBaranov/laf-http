@@ -35,6 +35,23 @@ export interface Request extends IncomingMessage {
      * @memberOf Request
      */
     query: any;
+
+    /**
+     * Body object
+     * 
+     * @type {*}
+     * @memberOf Request
+     */
+    body: any;
+
+    /**
+     * Payload object
+     * 
+     * @type {*}
+     * @memberOf Request
+     */
+    payload: any;
+
     /**
      * Parameters object
      * 
@@ -57,6 +74,8 @@ export interface Request extends IncomingMessage {
      */
     route: any;
 }
+
+export interface Next { }
 
 /**
  * LAF-HTTP
@@ -120,6 +139,10 @@ export class Http {
      * @memberOf Http
      */
     public request(req: Request, res: Response) {
+        if (req.url == "/favicon.ico") {
+            return false;
+        }
+
         req.params = {};
         req.parsed = parse(req.url, true);
         req.query = req.parsed.query;
@@ -127,10 +150,14 @@ export class Http {
         res.return = this._return(res);
         this._next = true;
 
+
         for (let middleware of this._middleware) {
             if (this._next) {
                 this._next = false;
-                middleware(req, res, this.next.bind(this));
+                if (typeof (middleware) === "function") {
+                    middleware(req, res, this.next.bind(this));
+                }
+
             } else {
                 return;
             }
@@ -139,7 +166,9 @@ export class Http {
         if (req.route) {
             if (req.route.middleware && this._next) {
                 this._next = false;
-                req.route.middleware(req, res, this.next.bind(this));
+                if (typeof (req.route.middleware) === "function") {
+                    req.route.middleware(req, res, this.next.bind(this));
+                }
             }
 
             if (!this._next) {
@@ -147,7 +176,6 @@ export class Http {
             }
 
             req.route.service(req, res);
-            res.end();
         } else {
             res.return(500, "Invalid Route");
         }
@@ -213,14 +241,15 @@ export class Http {
      */
     private _route(req: Request) {
         return this._routes.find(route => {
-            let regex = new RegExp(this.slashed(route.path).replace(/:[^\s/]+/g, "([\\w-]+)"));
+            let path = this.slashed(route.path);
+            let regex = new RegExp(path.replace(/:[^\s/]+/g, "([\\w-]+)"));
+            let matches = this.slashed(req.url.split("?")[0]).match(regex);
+            let params = path.match(/:[^\s/]+/g);
 
-            let matches = this.slashed(req.url).match(regex);
 
             if (matches && matches[0] === matches["input"] && route.method === req.method) {
-                let params = route.path.match(/:([a-z]+)/gi).map(e => e.replace(":", ""));
                 for (let k in params) {
-                    req.params[params[k]] = matches[parseInt(k) + 1];
+                    req.params[params[k].slice(1)] = matches[parseInt(k) + 1];
                 }
 
                 return route;

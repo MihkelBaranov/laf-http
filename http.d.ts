@@ -34,6 +34,20 @@ export interface Request extends IncomingMessage {
      */
     query: any;
     /**
+     * Body object
+     *
+     * @type {*}
+     * @memberOf Request
+     */
+    body: any;
+    /**
+     * Payload object
+     *
+     * @type {*}
+     * @memberOf Request
+     */
+    payload: any;
+    /**
      * Parameters object
      *
      * @type {*}
@@ -54,6 +68,8 @@ export interface Request extends IncomingMessage {
      * @memberOf Request
      */
     route: any;
+}
+export interface Next {
 }
 /**
  * LAF-HTTP
@@ -109,7 +125,7 @@ export declare class Http {
      *
      * @memberOf Http
      */
-    request(req: Request, res: Response): void;
+    request(req: Request, res: Response): boolean;
     /**
      * Register global middleware
      *
