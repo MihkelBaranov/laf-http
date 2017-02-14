@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse, Server, createServer } from "http";
 import { parse } from "url";
-
 /**
  * Response interface
  * 
@@ -75,7 +74,9 @@ export interface Request extends IncomingMessage {
     route: any;
 }
 
-export interface Next { }
+export interface Next {
+    (error?: string): void;
+}
 
 /**
  * LAF-HTTP
@@ -117,7 +118,7 @@ export class Http {
      * @memberOf Http
      */
     get handler(): any {
-        return this.request.bind(this);
+        return this._handler.bind(this);
     }
 
     /**
@@ -125,12 +126,10 @@ export class Http {
      * 
      * @memberOf Http
      */
-    public next() {
-        this._next = true;
-    }
+
 
     /**
-     * Request handler
+     * Handler
      * 
      * @param {Request} req
      * @param {Response} res
@@ -138,36 +137,47 @@ export class Http {
      * 
      * @memberOf Http
      */
-    public request(req: Request, res: Response) {
+    public async _handler(req: Request, res: Response) {
+
         if (req.url == "/favicon.ico") {
-            return false;
+            return;
         }
 
         req.params = {};
         req.parsed = parse(req.url, true);
         req.query = req.parsed.query;
-        req.route = this._route(req);
+
         res.return = this._return(res);
         this._next = true;
-
-
-        for (let middleware of this._middleware) {
-            if (this._next) {
+        if (this._middleware.length > 0) {
+            /**
+             * Execute middleware functions
+             * 
+             * @param {any} f
+             * @returns
+             */
+            let middleware = await Promise.all(this._middleware.map(async f => {
                 this._next = false;
-                if (typeof (middleware) === "function") {
-                    middleware(req, res, this.next.bind(this));
+                if ((typeof (f) == "function")) {
+                    return await this.execute(f, req, res);
                 }
-
-            } else {
-                return;
-            }
+            }));
         }
+
+        if (!this._next) {
+            return;
+        }
+
+        // Find route
+        req.route = this._route(req);
 
         if (req.route) {
             if (req.route.middleware && this._next) {
                 this._next = false;
-                if (typeof (req.route.middleware) === "function") {
-                    req.route.middleware(req, res, this.next.bind(this));
+                if (typeof (req.route.middleware) == "function") {
+                    await req.route.middleware(req, res, async () => {
+                        this._next = true;
+                    });
                 }
             }
 
@@ -179,7 +189,26 @@ export class Http {
         } else {
             res.return(500, "Invalid Route");
         }
+    }
 
+    /**
+     * 
+     * 
+     * @private
+     * @param {any} f
+     * @param {Request} req
+     * @param {Response} res
+     * @returns {Promise<string>}
+     * 
+     * @memberOf Http
+     */
+    private execute(f, req: Request, res: Response): Promise<string> {
+        return new Promise((resolve, reject) => {
+            f(req, res, () => {
+                this._next = true;
+                return resolve("Next called");
+            });
+        })
     }
 
     /**
@@ -230,6 +259,7 @@ export class Http {
         return path.endsWith("/") ? path.slice(0, -1) : path;
     }
 
+
     /**
      * Find route
      * 
@@ -239,13 +269,12 @@ export class Http {
      * 
      * @memberOf Http
      */
-    private _route(req: Request) {
+    private _route(req: Request): Object {
         return this._routes.find(route => {
             let path = this.slashed(route.path);
             let regex = new RegExp(path.replace(/:[^\s/]+/g, "([\\w-]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
             let params = path.match(/:[^\s/]+/g);
-
 
             if (matches && matches[0] === matches["input"] && route.method === req.method) {
                 for (let k in params) {
@@ -266,7 +295,7 @@ export class Http {
      * 
      * @memberOf Http
      */
-    private _return(res: Response) {
+    private _return(res: Response): any {
         return (status = 200, message) => {
             switch (typeof message) {
                 case "object":

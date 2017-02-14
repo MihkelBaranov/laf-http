@@ -70,6 +70,7 @@ export interface Request extends IncomingMessage {
     route: any;
 }
 export interface Next {
+    (error?: string): void;
 }
 /**
  * LAF-HTTP
@@ -115,9 +116,8 @@ export declare class Http {
      *
      * @memberOf Http
      */
-    next(): void;
     /**
-     * Request handler
+     * Handler
      *
      * @param {Request} req
      * @param {Response} res
@@ -125,7 +125,19 @@ export declare class Http {
      *
      * @memberOf Http
      */
-    request(req: Request, res: Response): boolean;
+    _handler(req: Request, res: Response): Promise<void>;
+    /**
+     *
+     *
+     * @private
+     * @param {any} f
+     * @param {Request} req
+     * @param {Response} res
+     * @returns {Promise<string>}
+     *
+     * @memberOf Http
+     */
+    private execute(f, req, res);
     /**
      * Register global middleware
      *

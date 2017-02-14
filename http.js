@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const http_1 = require("http");
 const url_1 = require("url");
 /**
@@ -42,18 +50,15 @@ class Http {
      * @memberOf Http
      */
     get handler() {
-        return this.request.bind(this);
+        return this._handler.bind(this);
     }
     /**
      * Pass through middleware
      *
      * @memberOf Http
      */
-    next() {
-        this._next = true;
-    }
     /**
-     * Request handler
+     * Handler
      *
      * @param {Request} req
      * @param {Response} res
@@ -61,42 +66,72 @@ class Http {
      *
      * @memberOf Http
      */
-    request(req, res) {
-        if (req.url == "/favicon.ico") {
-            return false;
-        }
-        req.params = {};
-        req.parsed = url_1.parse(req.url, true);
-        req.query = req.parsed.query;
-        req.route = this._route(req);
-        res.return = this._return(res);
-        this._next = true;
-        for (let middleware of this._middleware) {
-            if (this._next) {
-                this._next = false;
-                if (typeof (middleware) === "function") {
-                    middleware(req, res, this.next.bind(this));
-                }
-            }
-            else {
+    _handler(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (req.url == "/favicon.ico") {
                 return;
             }
-        }
-        if (req.route) {
-            if (req.route.middleware && this._next) {
-                this._next = false;
-                if (typeof (req.route.middleware) === "function") {
-                    req.route.middleware(req, res, this.next.bind(this));
-                }
+            req.params = {};
+            req.parsed = url_1.parse(req.url, true);
+            req.query = req.parsed.query;
+            res.return = this._return(res);
+            this._next = true;
+            if (this._middleware.length > 0) {
+                /**
+                 * Execute middleware functions
+                 *
+                 * @param {any} f
+                 * @returns
+                 */
+                let middleware = yield Promise.all(this._middleware.map((f) => __awaiter(this, void 0, void 0, function* () {
+                    this._next = false;
+                    if ((typeof (f) == "function")) {
+                        return yield this.execute(f, req, res);
+                    }
+                })));
             }
             if (!this._next) {
                 return;
             }
-            req.route.service(req, res);
-        }
-        else {
-            res.return(500, "Invalid Route");
-        }
+            // Find route
+            req.route = this._route(req);
+            if (req.route) {
+                if (req.route.middleware && this._next) {
+                    this._next = false;
+                    if (typeof (req.route.middleware) == "function") {
+                        yield req.route.middleware(req, res, () => __awaiter(this, void 0, void 0, function* () {
+                            this._next = true;
+                        }));
+                    }
+                }
+                if (!this._next) {
+                    return;
+                }
+                req.route.service(req, res);
+            }
+            else {
+                res.return(500, "Invalid Route");
+            }
+        });
+    }
+    /**
+     *
+     *
+     * @private
+     * @param {any} f
+     * @param {Request} req
+     * @param {Response} res
+     * @returns {Promise<string>}
+     *
+     * @memberOf Http
+     */
+    execute(f, req, res) {
+        return new Promise((resolve, reject) => {
+            f(req, res, () => {
+                this._next = true;
+                return resolve("Next called");
+            });
+        });
     }
     /**
      * Register global middleware
