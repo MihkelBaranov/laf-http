@@ -112,11 +112,20 @@ export class Http {
     private _next: boolean = false;
 
     /**
+    * Server instance
+    * 
+    * @public
+    * @type {any}
+    * @memberOf Http
+    */
+    public server: any;
+    /**
      * Get request handler
      * @readonly
      * @type {*}
      * @memberOf Http
      */
+
     get handler(): any {
         return this._handler.bind(this);
     }
@@ -139,7 +148,7 @@ export class Http {
      */
     public async _handler(req: Request, res: Response) {
 
-        if (req.url == "/favicon.ico") {
+        if (req.url === "/favicon.ico") {
             return;
         }
 
@@ -158,7 +167,7 @@ export class Http {
              */
             let middleware = await Promise.all(this._middleware.map(async f => {
                 this._next = false;
-                if ((typeof (f) == "function")) {
+                if ((typeof (f) === "function")) {
                     return await this.execute(f, req, res);
                 }
             }));
@@ -174,7 +183,7 @@ export class Http {
         if (req.route) {
             if (req.route.middleware && this._next) {
                 this._next = false;
-                if (typeof (req.route.middleware) == "function") {
+                if (typeof (req.route.middleware) === "function") {
                     await req.route.middleware(req, res, async () => {
                         this._next = true;
                     });
@@ -243,7 +252,7 @@ export class Http {
      * @memberOf Http
      */
     public listen(port: number) {
-        createServer(this.handler).listen(port);
+        this.server = createServer(this.handler).listen(port);
     }
 
     /**

@@ -68,7 +68,7 @@ class Http {
      */
     _handler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (req.url == "/favicon.ico") {
+            if (req.url === "/favicon.ico") {
                 return;
             }
             req.params = {};
@@ -85,7 +85,7 @@ class Http {
                  */
                 let middleware = yield Promise.all(this._middleware.map((f) => __awaiter(this, void 0, void 0, function* () {
                     this._next = false;
-                    if ((typeof (f) == "function")) {
+                    if ((typeof (f) === "function")) {
                         return yield this.execute(f, req, res);
                     }
                 })));
@@ -98,7 +98,7 @@ class Http {
             if (req.route) {
                 if (req.route.middleware && this._next) {
                     this._next = false;
-                    if (typeof (req.route.middleware) == "function") {
+                    if (typeof (req.route.middleware) === "function") {
                         yield req.route.middleware(req, res, () => __awaiter(this, void 0, void 0, function* () {
                             this._next = true;
                         }));
@@ -163,7 +163,7 @@ class Http {
      * @memberOf Http
      */
     listen(port) {
-        http_1.createServer(this.handler).listen(port);
+        this.server = http_1.createServer(this.handler).listen(port);
     }
     /**
      * Remove trailing slash

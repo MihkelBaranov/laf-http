@@ -105,6 +105,14 @@ export declare class Http {
      */
     private _next;
     /**
+    * Server instance
+    *
+    * @public
+    * @type {any}
+    * @memberOf Http
+    */
+    server: any;
+    /**
      * Get request handler
      * @readonly
      * @type {*}
