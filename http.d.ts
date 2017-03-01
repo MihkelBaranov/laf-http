@@ -120,11 +120,6 @@ export declare class Http {
      */
     readonly handler: any;
     /**
-     * Pass through middleware
-     *
-     * @memberOf Http
-     */
-    /**
      * Handler
      *
      * @param {Request} req

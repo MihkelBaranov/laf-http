@@ -130,12 +130,6 @@ export class Http {
         return this._handler.bind(this);
     }
 
-    /**
-     * Pass through middleware
-     * 
-     * @memberOf Http
-     */
-
 
     /**
      * Handler
@@ -281,9 +275,10 @@ export class Http {
     private _route(req: Request): Object {
         return this._routes.find(route => {
             let path = this.slashed(route.path);
-            let regex = new RegExp(path.replace(/:[^\s/]+/g, "([\\w-]+)"));
+            let regex = new RegExp(path.replace(/:[^\s/]+/g, "([\\w.%+-]+@[A-Za-z0-9.-]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
             let params = path.match(/:[^\s/]+/g);
+            console.log(matches);
 
             if (matches && matches[0] === matches["input"] && route.method === req.method) {
                 for (let k in params) {
