@@ -184,7 +184,7 @@ class Http {
     _route(req) {
         return this._routes.find(route => {
             let path = this.slashed(route.path);
-            let regex = new RegExp(path.replace(/:[^\s/]+/g, "([\\w.%+-]+@[A-Za-z0-9.-]+)"));
+            let regex = new RegExp(path.replace(/:[^\s/]+/g, "([\w.@+-]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
             let params = path.match(/:[^\s/]+/g);
             console.log(matches);
