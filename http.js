@@ -187,7 +187,6 @@ class Http {
             let regex = new RegExp(path.replace(/:[^\s/]+/g, "([^/\]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
             let params = path.match(/:[^\s/]+/g);
-            console.log(params);
             if (matches && matches[0] === matches["input"] && route.method === req.method) {
                 for (let k in params) {
                     req.params[params[k].slice(1)] = decodeURI(matches[parseInt(k) + 1]);
