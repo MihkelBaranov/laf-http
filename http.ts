@@ -94,6 +94,15 @@ export class Http {
      * @memberOf Http
      */
     private _middleware: any = [];
+
+    /**
+     * Store route middleware
+     * 
+     * @private
+     * @type {*}
+     * @memberOf Http
+     */
+    private _route_middleware: any = [];
     /**
      * Store registered routes
      * 
@@ -311,4 +320,55 @@ export class Http {
             return res.end();
         };
     }
+
+    private _generate_route(method, path, service, key) {
+        let route: any = {
+            method: method,
+            path: path,
+            service: service,
+        };
+
+        if (this._route_middleware[key]) {
+            route.middleware = this._route_middleware[key];
+        }
+
+        return route;
+    }
+
+    public Middleware(middleware) {
+        return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
+            this._route_middleware[propertyKey] = middleware;
+        };
+    }
+
+    public Get(path) {
+        return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
+            this._routes.push(this._generate_route("GET", path, descriptor.value, target));
+        };
+    }
+
+    public Post(path) {
+        return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
+            this._routes.push(this._generate_route("POST", path, descriptor.value, target));
+        };
+    }
+
+    public Put(path) {
+        return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
+            this._routes.push(this._generate_route("PUT", path, descriptor.value, target));
+        };
+    }
+
+    public Delete(path) {
+        return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
+            this._routes.push(this._generate_route("DELETE", path, descriptor.value, target));
+        };
+    }
+
+}
+
+const app = new Http();
+
+export {
+    app
 }

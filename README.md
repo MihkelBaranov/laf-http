@@ -1,36 +1,50 @@
 # LAF-HTTP
-Simple _express like_ http router
+Simple _express like_ http router using decorators
 
 ### Installation
 yarn:
 ```sh
 $ yarn add laf-http
 ```
-npm:
-```sh
-$ npm i --save laf-http
-```
+
 ### Example
 ```typescript
-import { Http, Request, Response } from "laf-http"
+import { app, Request, Response, Next } from "laf-http"
 
-let server = new Http();
+const auth = (req: Request, res: Response, next: Next) => {
+    next(); 
+}
 
-const routes = [{
-    method: "GET",
-    path: "/hello/:world",
-    service: (req: Request, res: Response) => {
-        res.return(200, req.params);
+class Hello {
+    @app.Get("/")
+    world(req: Request, res: Response) {
+        return res.return(200, {
+            message: "Hello world"
+        })
     }
-}];
 
-server.use((req: Request, res: Response, next: any) => {
+
+    @app.Get("/:name")
+    echo(req: Request, res: Response) {
+        return res.return(200, {
+            message: `Hello ${req.params.name}`
+        })
+    }
+
+    @app.Get("/secure")
+    @app.Middleware(auth)
+    echo(req: Request, res: Response) {
+        return res.return(200, {
+            message: "Secure page"
+        })
+    }
+}
+
+app.use((req: Request, res: Response, next: any) => {
     console.log("Middleware");
     next();
 });
 
-server.register(routes);
-
-server.listen(3000);
+app.listen(3000);
 console.log("Server running on port 3000");
 ```
