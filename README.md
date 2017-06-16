@@ -23,8 +23,7 @@ class Hello {
         })
     }
 
-
-    @app.Get("/:name")
+    @app.Get("/echo/:name")
     echo(req: Request, res: Response) {
         return res.return(200, {
             message: `Hello ${req.params.name}`
@@ -33,7 +32,7 @@ class Hello {
 
     @app.Get("/secure")
     @app.Middleware(auth)
-    echo(req: Request, res: Response) {
+    secure(req: Request, res: Response) {
         return res.return(200, {
             message: "Secure page"
         })
