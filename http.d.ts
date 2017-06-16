@@ -89,6 +89,14 @@ export declare class Http {
      */
     private _middleware;
     /**
+     * Store route middleware
+     *
+     * @private
+     * @type {*}
+     * @memberOf Http
+     */
+    private _route_middleware;
+    /**
      * Store registered routes
      *
      * @private
@@ -195,4 +203,12 @@ export declare class Http {
      * @memberOf Http
      */
     private _return(res);
+    private _generate_route(method, path, service, key);
+    Middleware(middleware: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    Get(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    Post(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    Put(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    Delete(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
 }
+declare const app: Http;
+export { app };
