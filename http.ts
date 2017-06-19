@@ -343,25 +343,25 @@ export class Http {
 
     public Get(path) {
         return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
-            this._routes.push(this._generate_route("GET", path, descriptor.value, target));
+            this._routes.push(this._generate_route("GET", path, descriptor.value, propertyKey));
         };
     }
 
     public Post(path) {
         return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
-            this._routes.push(this._generate_route("POST", path, descriptor.value, target));
+            this._routes.push(this._generate_route("POST", path, descriptor.value, propertyKey));
         };
     }
 
     public Put(path) {
         return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
-            this._routes.push(this._generate_route("PUT", path, descriptor.value, target));
+            this._routes.push(this._generate_route("PUT", path, descriptor.value, propertyKey));
         };
     }
 
     public Delete(path) {
         return (target, propertyKey: string, descriptor: PropertyDescriptor) => {
-            this._routes.push(this._generate_route("DELETE", path, descriptor.value, target));
+            this._routes.push(this._generate_route("DELETE", path, descriptor.value, propertyKey));
         };
     }
 
