@@ -244,22 +244,22 @@ class Http {
     }
     Get(path) {
         return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("GET", path, descriptor.value, target));
+            this._routes.push(this._generate_route("GET", path, descriptor.value, propertyKey));
         };
     }
     Post(path) {
         return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("POST", path, descriptor.value, target));
+            this._routes.push(this._generate_route("POST", path, descriptor.value, propertyKey));
         };
     }
     Put(path) {
         return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("PUT", path, descriptor.value, target));
+            this._routes.push(this._generate_route("PUT", path, descriptor.value, propertyKey));
         };
     }
     Delete(path) {
         return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("DELETE", path, descriptor.value, target));
+            this._routes.push(this._generate_route("DELETE", path, descriptor.value, propertyKey));
         };
     }
 }
