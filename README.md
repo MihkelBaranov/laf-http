@@ -15,6 +15,7 @@ const auth = (req: Request, res: Response, next: Next) => {
     next(); 
 }
 
+@app.Controller()
 class Hello {
     @app.Get("/")
     world(req: Request, res: Response) {
@@ -31,7 +32,7 @@ class Hello {
     }
 
     @app.Get("/secure")
-    @app.Middleware(auth)
+    @app.Use(auth)
     secure(req: Request, res: Response) {
         return res.return(200, {
             message: "Secure page"
@@ -39,10 +40,6 @@ class Hello {
     }
 }
 
-app.use((req: Request, res: Response, next: any) => {
-    console.log("Middleware");
-    next();
-});
 
 app.listen(3000);
 console.log("Server running on port 3000");

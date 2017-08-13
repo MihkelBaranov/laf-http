@@ -1,214 +1,49 @@
 /// <reference types="node" />
 import { IncomingMessage, ServerResponse } from "http";
-/**
- * Response interface
- *
- * @export
- * @interface Response
- * @extends {ServerResponse}
- */
+import 'reflect-metadata';
 export interface Response extends ServerResponse {
-    /**
-     *
-     *
-     * @param {any} [status]
-     * @param {any} [message]
-     *
-     * @memberOf Response
-     */
     return(status?: any, message?: any): void;
 }
-/**
- * Request interface
- *
- * @export
- * @interface Request
- * @extends {IncomingMessage}
- */
 export interface Request extends IncomingMessage {
-    /**
-     * Query object
-     *
-     * @type {*}
-     * @memberOf Request
-     */
     query: any;
-    /**
-     * Body object
-     *
-     * @type {*}
-     * @memberOf Request
-     */
     body: any;
-    /**
-     * Payload object
-     *
-     * @type {*}
-     * @memberOf Request
-     */
     payload: any;
-    /**
-     * Parameters object
-     *
-     * @type {*}
-     * @memberOf Request
-     */
     params: any;
-    /**
-     * Parsed url
-     *
-     * @type {*}
-     * @memberOf Request
-     */
     parsed: any;
-    /**
-     * Route object
-     *
-     * @type {*}
-     * @memberOf Request
-     */
     route: any;
+    next: any;
 }
 export interface Next {
-    (error?: string): void;
+    (data?: {}): any;
 }
-/**
- * LAF-HTTP
- * Simple express like http library for rest api services
- *
- * @export
- * @class Http
- */
 export declare class Http {
-    /**
-     * Store global middleware
-     *
-     * @private
-     * @type {*}
-     * @memberOf Http
-     */
-    private _middleware;
-    /**
-     * Store route middleware
-     *
-     * @private
-     * @type {*}
-     * @memberOf Http
-     */
-    private _route_middleware;
-    /**
-     * Store registered routes
-     *
-     * @private
-     * @type {Array<any>}
-     * @memberOf Http
-     */
-    private _routes;
-    /**
-     * Pass through middleware
-     *
-     * @private
-     * @type {boolean}
-     * @memberOf Http
-     */
-    private _next;
-    /**
-    * Server instance
-    *
-    * @public
-    * @type {any}
-    * @memberOf Http
-    */
     server: any;
-    /**
-     * Get request handler
-     * @readonly
-     * @type {*}
-     * @memberOf Http
-     */
-    readonly handler: any;
-    /**
-     * Handler
-     *
-     * @param {Request} req
-     * @param {Response} res
-     * @returns
-     *
-     * @memberOf Http
-     */
-    _handler(req: Request, res: Response): Promise<void>;
-    /**
-     *
-     *
-     * @private
-     * @param {any} f
-     * @param {Request} req
-     * @param {Response} res
-     * @returns {Promise<string>}
-     *
-     * @memberOf Http
-     */
+    _routes: Array<any>;
+    private _next;
+    constructor();
+    private _handler(req, res);
     private execute(f, req, res);
-    /**
-     * Register global middleware
-     *
-     * @param {any} middleware
-     *
-     * @memberOf Http
-     */
-    use(middleware: any): void;
-    /**
-     * Register routes
-     *
-     * @param {any} routes
-     *
-     * @memberOf Http
-     */
-    register(routes: any): void;
-    /**
-     * Start server
-     *
-     * @param {number} port
-     *
-     * @memberOf Http
-     */
     listen(port: number): void;
-    /**
-     * Remove trailing slash
-     *
-     * @private
-     * @param {any} path
-     * @returns {string}
-     *
-     * @memberOf Http
-     */
     private slashed(path);
-    /**
-     * Find route
-     *
-     * @private
-     * @param {Request} req
-     * @returns
-     *
-     * @memberOf Http
-     */
     private _route(req);
-    /**
-     * Return wrapper for req.return
-     *
-     * @private
-     * @param {Response} res
-     * @returns
-     *
-     * @memberOf Http
-     */
     private _return(res);
-    private _generate_route(method, path, service, key);
-    Middleware(middleware: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-    Get(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-    Post(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-    Put(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-    Delete(path: any): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    Controller(path?: string): (target: any) => void;
+    Use(...middlewares: any[]): any;
+    Route(method: any, path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Get(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Post(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Put(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Patch(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Delete(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    autoload(source: any): void;
 }
-declare const app: Http;
-export { app };
+export declare const app: Http;
+export declare const Get: any;
+export declare const Put: any;
+export declare const Post: any;
+export declare const Patch: any;
+export declare const Delete: any;
+export declare const Use: any;
+export declare const Route: any;
+export declare const Controller: any;
+export declare const Autoload: any;

@@ -1,19 +1,25 @@
 {
   "name": "laf-http",
-  "version": "1.1.9",
-  "description": "Lightweight  express like http module for building rest api services",
+  "version": "2.0",
+  "description": "Lightweight express like http module for building rest api services",
   "main": "http.js",
   "types": "http.d.ts",
   "repository": "https://github.com/MihkelBaranov/laf-http",
   "author": "Mihkel Baranov",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "tsc test/test.ts && ava test/**/*.js"
   },
   "devDependencies": {
-    "typescript": "^2.0.10"
+    "@types/node": "^7.0.0",
+    "@types/supertest-as-promised": "^2.0.34",
+    "ava": "^0.21.0",
+    "supertest": "^3.0.0",
+    "supertest-as-promised": "^4.0.2",
+    "typescript": "2.3.2"
   },
   "dependencies": {
-    "@types/node": "^7.0.0"
+    "reflect-metadata": "^0.1.10"
   }
 }

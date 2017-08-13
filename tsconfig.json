@@ -6,9 +6,10 @@
         "experimentalDecorators": true,
         "noImplicitAny": false,
         "declaration": true,
-        "watch": true
+        "watch": false
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "example"
     ]
 }

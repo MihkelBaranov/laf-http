@@ -7,68 +7,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const url_1 = require("url");
-/**
- * LAF-HTTP
- * Simple express like http library for rest api services
- *
- * @export
- * @class Http
- */
+require("reflect-metadata");
+const fs = require("fs");
 class Http {
     constructor() {
-        /**
-         * Store global middleware
-         *
-         * @private
-         * @type {*}
-         * @memberOf Http
-         */
-        this._middleware = [];
-        /**
-         * Store route middleware
-         *
-         * @private
-         * @type {*}
-         * @memberOf Http
-         */
-        this._route_middleware = [];
-        /**
-         * Store registered routes
-         *
-         * @private
-         * @type {Array<any>}
-         * @memberOf Http
-         */
         this._routes = [];
-        /**
-         * Pass through middleware
-         *
-         * @private
-         * @type {boolean}
-         * @memberOf Http
-         */
         this._next = false;
     }
-    /**
-     * Get request handler
-     * @readonly
-     * @type {*}
-     * @memberOf Http
-     */
-    get handler() {
-        return this._handler.bind(this);
-    }
-    /**
-     * Handler
-     *
-     * @param {Request} req
-     * @param {Response} res
-     * @returns
-     *
-     * @memberOf Http
-     */
     _handler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             if (req.url === "/favicon.ico") {
@@ -79,33 +27,16 @@ class Http {
             req.query = req.parsed.query;
             res.return = this._return(res);
             this._next = true;
-            if (this._middleware.length > 0) {
-                /**
-                 * Execute middleware functions
-                 *
-                 * @param {any} f
-                 * @returns
-                 */
-                let middleware = yield Promise.all(this._middleware.map((f) => __awaiter(this, void 0, void 0, function* () {
-                    this._next = false;
-                    if ((typeof (f) === "function")) {
-                        return yield this.execute(f, req, res);
-                    }
-                })));
-            }
-            if (!this._next) {
-                return;
-            }
             // Find route
             req.route = this._route(req);
             if (req.route) {
                 if (req.route.middleware && this._next) {
-                    this._next = false;
-                    if (typeof (req.route.middleware) === "function") {
-                        yield req.route.middleware(req, res, () => __awaiter(this, void 0, void 0, function* () {
-                            this._next = true;
-                        }));
-                    }
+                    yield Promise.all(req.route.middleware.map((middleware) => __awaiter(this, void 0, void 0, function* () {
+                        this._next = false;
+                        if (middleware instanceof Function) {
+                            return yield this.execute(middleware, req, res);
+                        }
+                    })));
                 }
                 if (!this._next) {
                     return;
@@ -117,78 +48,21 @@ class Http {
             }
         });
     }
-    /**
-     *
-     *
-     * @private
-     * @param {any} f
-     * @param {Request} req
-     * @param {Response} res
-     * @returns {Promise<string>}
-     *
-     * @memberOf Http
-     */
     execute(f, req, res) {
         return new Promise((resolve, reject) => {
-            f(req, res, () => {
+            f(req, res, (data) => {
                 this._next = true;
+                req.next = data || {};
                 return resolve("Next called");
             });
         });
     }
-    /**
-     * Register global middleware
-     *
-     * @param {any} middleware
-     *
-     * @memberOf Http
-     */
-    use(middleware) {
-        this._middleware.push(middleware);
-    }
-    /**
-     * Register routes
-     *
-     * @param {any} routes
-     *
-     * @memberOf Http
-     */
-    register(routes) {
-        for (let route of routes) {
-            this._routes.push(route);
-        }
-    }
-    /**
-     * Start server
-     *
-     * @param {number} port
-     *
-     * @memberOf Http
-     */
     listen(port) {
-        this.server = http_1.createServer(this.handler).listen(port);
+        this.server = http_1.createServer(this._handler.bind(this)).listen(port);
     }
-    /**
-     * Remove trailing slash
-     *
-     * @private
-     * @param {any} path
-     * @returns {string}
-     *
-     * @memberOf Http
-     */
     slashed(path) {
         return path.endsWith("/") ? path.slice(0, -1) : path;
     }
-    /**
-     * Find route
-     *
-     * @private
-     * @param {Request} req
-     * @returns
-     *
-     * @memberOf Http
-     */
     _route(req) {
         return this._routes.find(route => {
             let path = this.slashed(route.path);
@@ -203,15 +77,6 @@ class Http {
             }
         });
     }
-    /**
-     * Return wrapper for req.return
-     *
-     * @private
-     * @param {Response} res
-     * @returns
-     *
-     * @memberOf Http
-     */
     _return(res) {
         return (status = 200, message) => {
             switch (typeof message) {
@@ -226,43 +91,66 @@ class Http {
             return res.end();
         };
     }
-    _generate_route(method, path, service, key) {
-        let route = {
-            method: method,
-            path: path,
-            service: service,
+    Controller(path = '') {
+        return (target) => {
+            const class_middleware = Reflect.getMetadata("route:middleware", target) || [];
+            const routes = Reflect.getMetadata("route:data", target.prototype) || [];
+            for (const route of routes) {
+                const route_middleware = Reflect.getMetadata(`route:middleware_${route.name}`, target.prototype) || [];
+                this._routes.push({
+                    method: route.method,
+                    path: path + route.path,
+                    middleware: [...class_middleware, ...route_middleware],
+                    service: route.descriptor.value,
+                    name: route.name
+                });
+            }
+            Reflect.defineMetadata("route:data", this._routes, target);
         };
-        if (this._route_middleware[key]) {
-            route.middleware = this._route_middleware[key];
-        }
-        return route;
     }
-    Middleware(middleware) {
+    Use(...middlewares) {
         return (target, propertyKey, descriptor) => {
-            this._route_middleware[propertyKey] = middleware;
+            Reflect.defineMetadata(`route:middleware${propertyKey ? "_" + propertyKey : ""}`, middlewares, target);
+        };
+    }
+    Route(method, path) {
+        return (target, name, descriptor) => {
+            const meta = Reflect.getMetadata("route:data", target) || [];
+            meta.push({ method, path, name, descriptor });
+            Reflect.defineMetadata("route:data", meta, target);
         };
     }
     Get(path) {
-        return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("GET", path, descriptor.value, propertyKey));
-        };
+        return this.Route("GET", path);
     }
     Post(path) {
-        return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("POST", path, descriptor.value, propertyKey));
-        };
+        return this.Route("POST", path);
     }
     Put(path) {
-        return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("PUT", path, descriptor.value, propertyKey));
-        };
+        return this.Route("PUT", path);
+    }
+    Patch(path) {
+        return this.Route("PATCH", path);
     }
     Delete(path) {
-        return (target, propertyKey, descriptor) => {
-            this._routes.push(this._generate_route("DELETE", path, descriptor.value, propertyKey));
-        };
+        return this.Route("DELETE", path);
+    }
+    autoload(source) {
+        fs.readdirSync(source).map(file => {
+            if (file.endsWith(".js")) {
+                require(source + "/" + file.replace(/\.[^.$]+$/, ""));
+            }
+        });
     }
 }
 exports.Http = Http;
-const app = new Http();
-exports.app = app;
+exports.app = new Http();
+exports.Get = exports.app.Get.bind(exports.app);
+exports.Put = exports.app.Put.bind(exports.app);
+exports.Post = exports.app.Post.bind(exports.app);
+exports.Patch = exports.app.Patch.bind(exports.app);
+exports.Delete = exports.app.Delete.bind(exports.app);
+exports.Use = exports.app.Use.bind(exports.app);
+exports.Route = exports.app.Route.bind(exports.app);
+exports.Controller = exports.app.Controller.bind(exports.app);
+exports.Autoload = exports.app.autoload.bind(exports.app);
