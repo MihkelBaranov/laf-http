@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "test": "tsc test/test.ts && ava test/**/*.js"
+    "test": "ava test/**/*.js"
   },
   "devDependencies": {
     "@types/node": "^7.0.0",
