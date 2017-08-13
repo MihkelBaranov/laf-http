@@ -28,17 +28,14 @@ class Http {
             req.query = req.parsed.query;
             res.return = this._return(res);
             this._next = true;
+            if (this.global_middleware.length > 0) {
+                yield this.run(this.global_middleware, req, res);
+            }
             // Find route
             req.route = this._route(req);
             if (req.route) {
                 if (req.route.middleware && this._next) {
-                    req.route.middleware = this.global_middleware.concat(req.route.middleware);
-                    yield Promise.all(req.route.middleware.map((middleware) => __awaiter(this, void 0, void 0, function* () {
-                        this._next = false;
-                        if (middleware instanceof Function) {
-                            return yield this.execute(middleware, req, res);
-                        }
-                    })));
+                    yield this.run(req.route.middleware, req, res);
                 }
                 if (!this._next) {
                     return;
@@ -57,6 +54,16 @@ class Http {
                 req.next = data || {};
                 return resolve("Next called");
             });
+        });
+    }
+    run(middleware, req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield Promise.all(middleware.map((middleware) => __awaiter(this, void 0, void 0, function* () {
+                this._next = false;
+                if (middleware instanceof Function) {
+                    return yield this.execute(middleware, req, res);
+                }
+            })));
         });
     }
     use(middleware) {

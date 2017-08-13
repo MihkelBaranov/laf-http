@@ -24,6 +24,7 @@ export declare class Http {
     constructor();
     private _handler(req, res);
     private execute(f, req, res);
+    private run(middleware, req, res);
     use(middleware: any): void;
     listen(port: number): void;
     private slashed(path);

@@ -41,6 +41,11 @@ export class Http {
 
         res.return = this._return(res);
         this._next = true;
+        if (this.global_middleware.length > 0) {
+            await this.run(this.global_middleware, req, res);
+        }
+
+
 
         // Find route
         req.route = this._route(req);
@@ -48,13 +53,7 @@ export class Http {
         if (req.route) {
 
             if (req.route.middleware && this._next) {
-                req.route.middleware = this.global_middleware.concat(req.route.middleware);
-                await Promise.all(req.route.middleware.map(async (middleware) => {
-                    this._next = false;
-                    if (middleware instanceof Function) {
-                        return await this.execute(middleware, req, res);
-                    }
-                }))
+                await this.run(req.route.middleware, req, res);
             }
 
             if (!this._next) {
@@ -77,6 +76,14 @@ export class Http {
         })
     }
 
+    private async run(middleware, req, res) {
+        return await Promise.all(middleware.map(async (middleware) => {
+            this._next = false;
+            if (middleware instanceof Function) {
+                return await this.execute(middleware, req, res);
+            }
+        }))
+    }
 
     public use(middleware) {
         this.global_middleware.push(middleware);
