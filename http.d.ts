@@ -20,9 +20,11 @@ export declare class Http {
     server: any;
     _routes: Array<any>;
     private _next;
+    private global_middleware;
     constructor();
     private _handler(req, res);
     private execute(f, req, res);
+    use(middleware: any): void;
     listen(port: number): void;
     private slashed(path);
     private _route(req);

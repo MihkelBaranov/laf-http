@@ -16,6 +16,7 @@ class Http {
     constructor() {
         this._routes = [];
         this._next = false;
+        this.global_middleware = [];
     }
     _handler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,6 +32,7 @@ class Http {
             req.route = this._route(req);
             if (req.route) {
                 if (req.route.middleware && this._next) {
+                    req.route.middleware = this.global_middleware.concat(req.route.middleware);
                     yield Promise.all(req.route.middleware.map((middleware) => __awaiter(this, void 0, void 0, function* () {
                         this._next = false;
                         if (middleware instanceof Function) {
@@ -56,6 +58,9 @@ class Http {
                 return resolve("Next called");
             });
         });
+    }
+    use(middleware) {
+        this.global_middleware.push(middleware);
     }
     listen(port) {
         this.server = http_1.createServer(this._handler.bind(this)).listen(port);

@@ -26,7 +26,7 @@ export class Http {
 
     public _routes: Array<any> = [];
     private _next: boolean = false;
-
+    private global_middleware: Array<Function> = [];
     constructor() { }
 
     private async _handler(req: Request, res: Response) {
@@ -48,6 +48,7 @@ export class Http {
         if (req.route) {
 
             if (req.route.middleware && this._next) {
+                req.route.middleware = this.global_middleware.concat(req.route.middleware);
                 await Promise.all(req.route.middleware.map(async (middleware) => {
                     this._next = false;
                     if (middleware instanceof Function) {
@@ -74,6 +75,11 @@ export class Http {
                 return resolve("Next called");
             });
         })
+    }
+
+
+    public use(middleware) {
+        this.global_middleware.push(middleware);
     }
 
     public listen(port: number) {
