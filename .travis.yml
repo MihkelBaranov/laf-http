@@ -7,6 +7,7 @@ node_js:
 branches:
   only:
   - '2.0'
-
+script:
+  - yarn run build
 test: 
   - yarn test
