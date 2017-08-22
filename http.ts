@@ -14,6 +14,7 @@ export interface Request extends IncomingMessage {
     params: any;
     parsed: any;
     route: any;
+    files: any;
     next: any;
 }
 
