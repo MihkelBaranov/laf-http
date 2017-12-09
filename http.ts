@@ -16,6 +16,13 @@ export interface Request extends IncomingMessage {
     route: any;
     files: any;
     next: any;
+    response: Response;
+    request: Request
+}
+
+export interface Return {
+    code: number;
+    message: any;
 }
 
 export interface Next {
@@ -27,29 +34,46 @@ export class Http {
 
     public _routes: Array<any> = [];
     private _next: boolean = false;
-    private global_middleware: Array<Function> = [];
+    private middleware: Array<Function> = [];
+
     constructor() { }
 
-    private async _handler(req: Request, res: Response) {
+    private get_arguments(params, req) {
+        let args = [req];
 
-        if (req.url === "/favicon.ico") {
-            return;
+        if (params) {
+            args = [];
+
+            params.sort((a, b) => a.index - b.index);
+
+            for (const param of params) {
+                let result;
+                if (param !== undefined) {
+                    result = param.fn(req);
+                }
+                args.push(result);
+            }
         }
 
+        return args;
+    }
+
+    private async handle_request(req: Request, res: Response) {
         req.params = {};
         req.parsed = parse(req.url, true);
         req.query = req.parsed.query;
 
+        req.response = res;
+        req.request = req;
+
         res.return = this._return(res);
         this._next = true;
-        if (this.global_middleware.length > 0) {
-            await this.run(this.global_middleware, req, res);
+        if (this.middleware.length > 0) {
+            await this.run(this.middleware, req, res);
         }
 
 
-
-        // Find route
-        req.route = this._route(req);
+        req.route = this.find_route(req);
 
         if (req.route) {
 
@@ -61,15 +85,35 @@ export class Http {
                 return;
             }
 
-            req.route.service(req, res);
+            const args = this.get_arguments(req.route.params, req);
+
+            const result = await req.route.service(...args);
+
+            if (result) {
+                res.return(result.code, result);
+            } else {
+                if (!res.finished) {
+                    res.return(400, {
+                        code: 400,
+                        message: {
+                            error: "No Response"
+                        }
+                    });
+                }
+            }
         } else {
-            res.return(500, "Invalid Route");
+            res.return(404, {
+                code: 404,
+                message: {
+                    error: "Invalid Route"
+                }
+            });
         }
     }
 
-    private execute(f, req: Request, res: Response): Promise<string> {
+    private execute(Middleware, req: Request, res: Response): Promise<string> {
         return new Promise((resolve, reject) => {
-            f(req, res, (data?) => {
+            Middleware(req, res, (data?) => {
                 this._next = true;
                 req.next = data || {};
                 return resolve("Next called");
@@ -87,19 +131,20 @@ export class Http {
     }
 
     public use(middleware) {
-        this.global_middleware.push(middleware);
+        this.middleware.push(middleware);
     }
 
     public listen(port: number) {
-        this.server = createServer(this._handler.bind(this)).listen(port);
+        this.server = createServer(this.handle_request.bind(this)).listen(port);
     }
 
     private slashed(path): string {
         return path.endsWith("/") ? path.slice(0, -1) : path;
     }
 
-    private _route(req: Request): Object {
+    private find_route(req: Request): Object {
         return this._routes.find(route => {
+
             let path = this.slashed(route.path);
             let regex = new RegExp(path.replace(/:[^\s/]+/g, "([^/\]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
@@ -129,21 +174,33 @@ export class Http {
         };
     }
 
+    private inject(fn) {
+        return (target: any, name: string, index: number) => {
+            const meta = Reflect.getMetadata(`route:params_${name}`, target) || [];
+            meta.push({ index, name, fn });
+            Reflect.defineMetadata(`route:params_${name}`, meta, target);
+        };
+    }
+
     public Controller(path: string = '') {
         return (target) => {
-            const class_middleware = Reflect.getMetadata("route:middleware", target) || [];
+            const controller_middleware = Reflect.getMetadata("route:middleware", target) || [];
             const routes = Reflect.getMetadata("route:data", target.prototype) || [];
 
             for (const route of routes) {
                 const route_middleware = Reflect.getMetadata(`route:middleware_${route.name}`, target.prototype) || [];
+                const params = Reflect.getMetadata(`route:params_${route.name}`, target.prototype) || [];
+
                 this._routes.push({
                     method: route.method,
                     path: path + route.path,
-                    middleware: [...class_middleware, ...route_middleware],
+                    middleware: [...controller_middleware, ...route_middleware],
                     service: route.descriptor.value,
-                    name: route.name
+                    name: route.name,
+                    params
                 })
             }
+
             Reflect.defineMetadata("route:data", this._routes, target);
         };
     }
@@ -160,6 +217,34 @@ export class Http {
             meta.push({ method, path, name, descriptor });
             Reflect.defineMetadata("route:data", meta, target);
         };
+    }
+
+    public Param(key?) {
+        return this.inject(req => !key ? req.params : req.params[key]);
+    }
+
+    public Query(key?) {
+        return this.inject(req => !key ? req.query : req.query[key]);
+    }
+
+    public Body() {
+        return this.inject(req => req.body);
+    }
+
+    public Response() {
+        return this.inject(req => req.response);
+    }
+
+    public Request() {
+        return this.inject(req => req.request);
+    }
+
+    public Queries() {
+        return this.Query();
+    }
+
+    public Params() {
+        return this.Param();
     }
 
     public Get(path) {
@@ -202,3 +287,14 @@ export const Use = app.Use.bind(app);
 export const Route = app.Route.bind(app);
 export const Controller = app.Controller.bind(app);
 export const Autoload = app.autoload.bind(app);
+
+// New stuff
+export const Body = app.Body.bind(app);
+export const Param = app.Param.bind(app);
+export const Params = app.Params.bind(app);
+
+export const Query = app.Query.bind(app);
+export const Queries = app.Queries.bind(app);
+
+export const Req = app.Request.bind(app);
+export const Res = app.Response.bind(app);

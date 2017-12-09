@@ -40,3 +40,6 @@ test/test.js
 test/test.d.ts
 
 .vscode
+app.js
+app.ts
+app.d.ts

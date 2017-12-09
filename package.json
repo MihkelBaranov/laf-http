@@ -1,6 +1,6 @@
 {
   "name": "laf-http",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Lightweight express like http module for building rest api services",
   "main": "http.js",
   "types": "http.d.ts",
@@ -9,7 +9,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "test": "ava test/**/*.js"
+    "test": "ava test/**/*.js",
+    "docs": "typedoc --out docs http.ts --exclude  --exclude \"test/*.ts\""
   },
   "devDependencies": {
     "@types/node": "^7.0.0",

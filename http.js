@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const url_1 = require("url");
 require("reflect-metadata");
@@ -16,23 +15,36 @@ class Http {
     constructor() {
         this._routes = [];
         this._next = false;
-        this.global_middleware = [];
+        this.middleware = [];
     }
-    _handler(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (req.url === "/favicon.ico") {
-                return;
+    get_arguments(params, req) {
+        let args = [req];
+        if (params) {
+            args = [];
+            params.sort((a, b) => a.index - b.index);
+            for (const param of params) {
+                let result;
+                if (param !== undefined) {
+                    result = param.fn(req);
+                }
+                args.push(result);
             }
+        }
+        return args;
+    }
+    handle_request(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
             req.params = {};
             req.parsed = url_1.parse(req.url, true);
             req.query = req.parsed.query;
+            req.response = res;
+            req.request = req;
             res.return = this._return(res);
             this._next = true;
-            if (this.global_middleware.length > 0) {
-                yield this.run(this.global_middleware, req, res);
+            if (this.middleware.length > 0) {
+                yield this.run(this.middleware, req, res);
             }
-            // Find route
-            req.route = this._route(req);
+            req.route = this.find_route(req);
             if (req.route) {
                 if (req.route.middleware && this._next) {
                     yield this.run(req.route.middleware, req, res);
@@ -40,16 +52,35 @@ class Http {
                 if (!this._next) {
                     return;
                 }
-                req.route.service(req, res);
+                const args = this.get_arguments(req.route.params, req);
+                const result = yield req.route.service(...args);
+                if (result) {
+                    res.return(result.code, result);
+                }
+                else {
+                    if (!res.finished) {
+                        res.return(400, {
+                            code: 400,
+                            message: {
+                                error: "No Response"
+                            }
+                        });
+                    }
+                }
             }
             else {
-                res.return(500, "Invalid Route");
+                res.return(404, {
+                    code: 404,
+                    message: {
+                        error: "Invalid Route"
+                    }
+                });
             }
         });
     }
-    execute(f, req, res) {
+    execute(Middleware, req, res) {
         return new Promise((resolve, reject) => {
-            f(req, res, (data) => {
+            Middleware(req, res, (data) => {
                 this._next = true;
                 req.next = data || {};
                 return resolve("Next called");
@@ -67,15 +98,15 @@ class Http {
         });
     }
     use(middleware) {
-        this.global_middleware.push(middleware);
+        this.middleware.push(middleware);
     }
     listen(port) {
-        this.server = http_1.createServer(this._handler.bind(this)).listen(port);
+        this.server = http_1.createServer(this.handle_request.bind(this)).listen(port);
     }
     slashed(path) {
         return path.endsWith("/") ? path.slice(0, -1) : path;
     }
-    _route(req) {
+    find_route(req) {
         return this._routes.find(route => {
             let path = this.slashed(route.path);
             let regex = new RegExp(path.replace(/:[^\s/]+/g, "([^/\]+)"));
@@ -103,18 +134,27 @@ class Http {
             return res.end();
         };
     }
+    inject(fn) {
+        return (target, name, index) => {
+            const meta = Reflect.getMetadata(`route:params_${name}`, target) || [];
+            meta.push({ index, name, fn });
+            Reflect.defineMetadata(`route:params_${name}`, meta, target);
+        };
+    }
     Controller(path = '') {
         return (target) => {
-            const class_middleware = Reflect.getMetadata("route:middleware", target) || [];
+            const controller_middleware = Reflect.getMetadata("route:middleware", target) || [];
             const routes = Reflect.getMetadata("route:data", target.prototype) || [];
             for (const route of routes) {
                 const route_middleware = Reflect.getMetadata(`route:middleware_${route.name}`, target.prototype) || [];
+                const params = Reflect.getMetadata(`route:params_${route.name}`, target.prototype) || [];
                 this._routes.push({
                     method: route.method,
                     path: path + route.path,
-                    middleware: [...class_middleware, ...route_middleware],
+                    middleware: [...controller_middleware, ...route_middleware],
                     service: route.descriptor.value,
-                    name: route.name
+                    name: route.name,
+                    params
                 });
             }
             Reflect.defineMetadata("route:data", this._routes, target);
@@ -131,6 +171,27 @@ class Http {
             meta.push({ method, path, name, descriptor });
             Reflect.defineMetadata("route:data", meta, target);
         };
+    }
+    Param(key) {
+        return this.inject(req => !key ? req.params : req.params[key]);
+    }
+    Query(key) {
+        return this.inject(req => !key ? req.query : req.query[key]);
+    }
+    Body() {
+        return this.inject(req => req.body);
+    }
+    Response() {
+        return this.inject(req => req.response);
+    }
+    Request() {
+        return this.inject(req => req.request);
+    }
+    Queries() {
+        return this.Query();
+    }
+    Params() {
+        return this.Param();
     }
     Get(path) {
         return this.Route("GET", path);
@@ -166,3 +227,11 @@ exports.Use = exports.app.Use.bind(exports.app);
 exports.Route = exports.app.Route.bind(exports.app);
 exports.Controller = exports.app.Controller.bind(exports.app);
 exports.Autoload = exports.app.autoload.bind(exports.app);
+// New stuff
+exports.Body = exports.app.Body.bind(exports.app);
+exports.Param = exports.app.Param.bind(exports.app);
+exports.Params = exports.app.Params.bind(exports.app);
+exports.Query = exports.app.Query.bind(exports.app);
+exports.Queries = exports.app.Queries.bind(exports.app);
+exports.Req = exports.app.Request.bind(exports.app);
+exports.Res = exports.app.Response.bind(exports.app);

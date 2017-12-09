@@ -65,35 +65,45 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="laf-http">LAF-HTTP</h1>
-				<p>Simple <em>express like</em> http router</p>
+				<p>Simple <em>express like</em> http router using decorators</p>
 				<h3 id="installation">Installation</h3>
 				<p>yarn:</p>
 				<pre><code class="lang-sh">$ yarn add laf-http
 </code></pre>
-				<p>npm:</p>
-				<pre><code class="lang-sh">$ npm i --save laf-http
-</code></pre>
 				<h3 id="example">Example</h3>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { Http, Request, Response } from <span class="hljs-string">"laf-http"</span>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { app, Request, Response, Next } from <span class="hljs-string">"laf-http"</span>
 
-<span class="hljs-keyword">let</span> server = <span class="hljs-keyword">new</span> Http();
+<span class="hljs-keyword">const</span> auth = (req: Request, res: Response, next: Next) =&gt; {
+    next(); 
+}
 
-<span class="hljs-keyword">const</span> routes = [{
-    method: <span class="hljs-string">"GET"</span>,
-    path: <span class="hljs-string">"/hello/:world"</span>,
-    service: (req: Request, res: Response) =&gt; {
-        res.return(<span class="hljs-number">200</span>, req.params);
+<span class="hljs-meta">@app</span>.Controller()
+<span class="hljs-keyword">class</span> Hello {
+    <span class="hljs-meta">@app</span>.Get(<span class="hljs-string">"/"</span>)
+    world(req: Request, res: Response) {
+        <span class="hljs-keyword">return</span> res.return(<span class="hljs-number">200</span>, {
+            message: <span class="hljs-string">"Hello world"</span>
+        })
     }
-}];
 
-server.use((req: Request, res: Response, next: <span class="hljs-built_in">any</span>) =&gt; {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Middleware"</span>);
-    next();
-});
+    <span class="hljs-meta">@app</span>.Get(<span class="hljs-string">"/echo/:name"</span>)
+    echo(req: Request, res: Response) {
+        <span class="hljs-keyword">return</span> res.return(<span class="hljs-number">200</span>, {
+            message: <span class="hljs-string">`Hello <span class="hljs-subst">${req.params.name}</span>`</span>
+        })
+    }
 
-server.register(routes);
+    <span class="hljs-meta">@app</span>.Get(<span class="hljs-string">"/secure"</span>)
+    <span class="hljs-meta">@app</span>.Use(auth)
+    secure(req: Request, res: Response) {
+        <span class="hljs-keyword">return</span> res.return(<span class="hljs-number">200</span>, {
+            message: <span class="hljs-string">"Secure page"</span>
+        })
+    }
+}
 
-server.listen(<span class="hljs-number">3000</span>);
+
+app.listen(<span class="hljs-number">3000</span>);
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Server running on port 3000"</span>);
 </code></pre>
 			</div>
@@ -105,7 +115,13 @@ server.listen(<span class="hljs-number">3000</span>);
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_.html">"app"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_http_.html">"http"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_test_.html">"test/test"</a>
 					</li>
 				</ul>
 			</nav>

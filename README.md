@@ -1,10 +1,9 @@
 # LAF-HTTP
-Simple _express like_ http router using decorators
+WIP
 
 ### Installation
-yarn:
 ```sh
-$ yarn add laf-http
+$ npm add laf-http@next
 ```
 
 ### Example
