@@ -54,6 +54,7 @@ export declare class Http {
     Put(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
     Patch(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
     Delete(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Mixed(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
     autoload(source: any): void;
 }
 export declare const app: Http;
@@ -63,6 +64,7 @@ export declare const Post: any;
 export declare const Patch: any;
 export declare const Delete: any;
 export declare const Use: any;
+export declare const Mixed: any;
 export declare const Route: any;
 export declare const Controller: any;
 export declare const Autoload: any;

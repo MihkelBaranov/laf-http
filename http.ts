@@ -149,7 +149,7 @@ export class Http {
             let regex = new RegExp(path.replace(/:[^\s/]+/g, "([^/\]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
             let params = path.match(/:[^\s/]+/g);
-            if (matches && matches[0] === matches["input"] && route.method === req.method) {
+            if (matches && matches[0] === matches["input"] && (route.method === req.method || route.method === "MIXED")) {
                 for (let k in params) {
                     req.params[params[k].slice(1)] = decodeURI(matches[parseInt(k) + 1]);
                 }
@@ -255,6 +255,7 @@ export class Http {
         return this.Route("POST", path);
     }
 
+
     public Put(path) {
         return this.Route("PUT", path);
     }
@@ -265,6 +266,10 @@ export class Http {
 
     public Delete(path) {
         return this.Route("DELETE", path);
+    }
+
+    public Mixed(path) {
+        return this.Route("MIXED", path);
     }
 
     public autoload(source) {
@@ -284,6 +289,7 @@ export const Post = app.Post.bind(app);
 export const Patch = app.Patch.bind(app);
 export const Delete = app.Delete.bind(app);
 export const Use = app.Use.bind(app);
+export const Mixed = app.Mixed.bind(app);
 export const Route = app.Route.bind(app);
 export const Controller = app.Controller.bind(app);
 export const Autoload = app.autoload.bind(app);

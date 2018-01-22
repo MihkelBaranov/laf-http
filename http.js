@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const url_1 = require("url");
 require("reflect-metadata");
@@ -112,7 +113,7 @@ class Http {
             let regex = new RegExp(path.replace(/:[^\s/]+/g, "([^/\]+)"));
             let matches = this.slashed(req.url.split("?")[0]).match(regex);
             let params = path.match(/:[^\s/]+/g);
-            if (matches && matches[0] === matches["input"] && route.method === req.method) {
+            if (matches && matches[0] === matches["input"] && (route.method === req.method || route.method === "MIXED")) {
                 for (let k in params) {
                     req.params[params[k].slice(1)] = decodeURI(matches[parseInt(k) + 1]);
                 }
@@ -208,6 +209,9 @@ class Http {
     Delete(path) {
         return this.Route("DELETE", path);
     }
+    Mixed(path) {
+        return this.Route("MIXED", path);
+    }
     autoload(source) {
         fs.readdirSync(source).map(file => {
             if (file.endsWith(".js")) {
@@ -224,6 +228,7 @@ exports.Post = exports.app.Post.bind(exports.app);
 exports.Patch = exports.app.Patch.bind(exports.app);
 exports.Delete = exports.app.Delete.bind(exports.app);
 exports.Use = exports.app.Use.bind(exports.app);
+exports.Mixed = exports.app.Mixed.bind(exports.app);
 exports.Route = exports.app.Route.bind(exports.app);
 exports.Controller = exports.app.Controller.bind(exports.app);
 exports.Autoload = exports.app.autoload.bind(exports.app);
