@@ -82,17 +82,11 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_http_.http.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_http_.http.html#_next" class="tsd-kind-icon">_next</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_http_.http.html#_routes" class="tsd-kind-icon">_routes</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_http_.http.html#middleware" class="tsd-kind-icon">middleware</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_http_.http.html#next" class="tsd-kind-icon">next</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_http_.http.html#routes" class="tsd-kind-icon">routes</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_http_.http.html#server" class="tsd-kind-icon">server</a></li>
 							</ul>
 						</section>
@@ -103,6 +97,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#controller" class="tsd-kind-icon">Controller</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#delete" class="tsd-kind-icon">Delete</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#get" class="tsd-kind-icon">Get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#mixed" class="tsd-kind-icon">Mixed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#param" class="tsd-kind-icon">Param</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#params" class="tsd-kind-icon">Params</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_http_.http.html#patch" class="tsd-kind-icon">Patch</a></li>
@@ -131,64 +126,44 @@
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Http<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_http_.http.html" class="tsd-signature-type">Http</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L37">http.ts:37</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="_http_.http.html" class="tsd-signature-type">Http</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_next" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _next</h3>
-					<div class="tsd-signature tsd-kind-icon">_next<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<a name="middleware" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> middleware</h3>
+					<div class="tsd-signature tsd-kind-icon">middleware<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L36">http.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L61">http.ts:61</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="next" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> next</h3>
+					<div class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L60">http.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_routes" class="tsd-anchor"></a>
-					<h3>_routes</h3>
-					<div class="tsd-signature tsd-kind-icon">_routes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<a name="routes" class="tsd-anchor"></a>
+					<h3>routes</h3>
+					<div class="tsd-signature tsd-kind-icon">routes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L35">http.ts:35</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="middleware" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> middleware</h3>
-					<div class="tsd-signature tsd-kind-icon">middleware<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L37">http.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L58">http.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="server" class="tsd-anchor"></a>
 					<h3>server</h3>
-					<div class="tsd-signature tsd-kind-icon">server<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<div class="tsd-signature tsd-kind-icon">server<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Server</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L33">http.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L57">http.ts:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -205,7 +180,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L230">http.ts:230</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L116">http.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -222,7 +197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L185">http.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L63">http.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -245,7 +220,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L266">http.ts:266</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L152">http.ts:152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -268,7 +243,30 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L250">http.ts:250</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L136">http.ts:136</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="mixed" class="tsd-anchor"></a>
+					<h3>Mixed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">Mixed<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L156">http.ts:156</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -291,7 +289,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L222">http.ts:222</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L108">http.ts:108</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -314,7 +312,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L246">http.ts:246</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L132">http.ts:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -331,7 +329,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L262">http.ts:262</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L148">http.ts:148</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -354,7 +352,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L254">http.ts:254</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L140">http.ts:140</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -377,7 +375,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L258">http.ts:258</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L144">http.ts:144</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -400,7 +398,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L242">http.ts:242</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L128">http.ts:128</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -417,7 +415,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L226">http.ts:226</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L112">http.ts:112</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -440,7 +438,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L238">http.ts:238</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L124">http.ts:124</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -457,7 +455,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L234">http.ts:234</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L120">http.ts:120</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -474,7 +472,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L214">http.ts:214</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L100">http.ts:100</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -500,7 +498,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L208">http.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L94">http.ts:94</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -517,19 +515,19 @@
 					<a name="_return" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _return</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_return<span class="tsd-signature-symbol">(</span>res<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">_return<span class="tsd-signature-symbol">(</span>res<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.iresponse.html" class="tsd-signature-type">IResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L162">http.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L286">http.ts:286</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>res: <a href="../interfaces/_http_.response.html" class="tsd-signature-type">Response</a></h5>
+									<h5>res: <a href="../interfaces/_http_.iresponse.html" class="tsd-signature-type">IResponse</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -546,7 +544,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L270">http.ts:270</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L160">http.ts:160</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -563,13 +561,13 @@
 					<a name="execute" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> execute</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">execute<span class="tsd-signature-symbol">(</span>Middleware<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.request.html" class="tsd-signature-type">Request</a>, res<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">execute<span class="tsd-signature-symbol">(</span>Middleware<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.irequest.html" class="tsd-signature-type">IRequest</a>, res<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.iresponse.html" class="tsd-signature-type">IResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L114">http.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L242">http.ts:242</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -578,10 +576,10 @@
 									<h5>Middleware: <span class="tsd-signature-type">any</span></h5>
 								</li>
 								<li>
-									<h5>req: <a href="../interfaces/_http_.request.html" class="tsd-signature-type">Request</a></h5>
+									<h5>req: <a href="../interfaces/_http_.irequest.html" class="tsd-signature-type">IRequest</a></h5>
 								</li>
 								<li>
-									<h5>res: <a href="../interfaces/_http_.response.html" class="tsd-signature-type">Response</a></h5>
+									<h5>res: <a href="../interfaces/_http_.iresponse.html" class="tsd-signature-type">IResponse</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -592,22 +590,22 @@
 					<a name="find_route" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> find_<wbr>route</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">find_<wbr>route<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.request.html" class="tsd-signature-type">Request</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span></li>
+						<li class="tsd-signature tsd-kind-icon">find_<wbr>route<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.irequest.html" class="tsd-signature-type">IRequest</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.iroute.html" class="tsd-signature-type">IRoute</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L145">http.ts:145</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L265">http.ts:265</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <a href="../interfaces/_http_.request.html" class="tsd-signature-type">Request</a></h5>
+									<h5>req: <a href="../interfaces/_http_.irequest.html" class="tsd-signature-type">IRequest</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Object</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_http_.iroute.html" class="tsd-signature-type">IRoute</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -615,13 +613,13 @@
 					<a name="get_arguments" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get_<wbr>arguments</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">get_<wbr>arguments<span class="tsd-signature-symbol">(</span>params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get_<wbr>arguments<span class="tsd-signature-symbol">(</span>params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L41">http.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L168">http.ts:168</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -633,7 +631,7 @@
 									<h5>req: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -641,22 +639,22 @@
 					<a name="handle_request" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> handle_<wbr>request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">handle_<wbr>request<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.request.html" class="tsd-signature-type">Request</a>, res<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">handle_<wbr>request<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.irequest.html" class="tsd-signature-type">IRequest</a>, res<span class="tsd-signature-symbol">: </span><a href="../interfaces/_http_.iresponse.html" class="tsd-signature-type">IResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L61">http.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L188">http.ts:188</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <a href="../interfaces/_http_.request.html" class="tsd-signature-type">Request</a></h5>
+									<h5>req: <a href="../interfaces/_http_.irequest.html" class="tsd-signature-type">IRequest</a></h5>
 								</li>
 								<li>
-									<h5>res: <a href="../interfaces/_http_.response.html" class="tsd-signature-type">Response</a></h5>
+									<h5>res: <a href="../interfaces/_http_.iresponse.html" class="tsd-signature-type">IResponse</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -673,7 +671,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L177">http.ts:177</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L301">http.ts:301</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -696,7 +694,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L137">http.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L90">http.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -719,7 +717,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L124">http.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L252">http.ts:252</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -748,7 +746,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L141">http.ts:141</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L261">http.ts:261</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -771,7 +769,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/45115d5/http.ts#L133">http.ts:133</a></li>
+									<li>Defined in <a href="https://github.com/MihkelBaranov/laf-http/blob/99460d3/http.ts#L86">http.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -792,35 +790,32 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_app_.html">"app"</a>
-					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="../modules/_http_.html">"http"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_test_test_.html">"test/test"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_http_.constants.html" class="tsd-kind-icon">Constants</a>
+					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_http_.httpmethodsenum.html" class="tsd-kind-icon">Http<wbr>Methods<wbr>Enum</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
 						<a href="_http_.http.html" class="tsd-kind-icon">Http</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_http_.http.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_http_.http.html#_next" class="tsd-kind-icon">_next</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_http_.http.html#_routes" class="tsd-kind-icon">_routes</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_http_.http.html#middleware" class="tsd-kind-icon">middleware</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_http_.http.html#next" class="tsd-kind-icon">next</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_http_.http.html#routes" class="tsd-kind-icon">routes</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_http_.http.html#server" class="tsd-kind-icon">server</a>
@@ -836,6 +831,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_http_.http.html#get" class="tsd-kind-icon">Get</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_http_.http.html#mixed" class="tsd-kind-icon">Mixed</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_http_.http.html#param" class="tsd-kind-icon">Param</a>
@@ -908,16 +906,19 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_http_.next.html" class="tsd-kind-icon">Next</a>
+						<a href="../interfaces/_http_.inext.html" class="tsd-kind-icon">INext</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_http_.request.html" class="tsd-kind-icon">Request</a>
+						<a href="../interfaces/_http_.irequest.html" class="tsd-kind-icon">IRequest</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_http_.response.html" class="tsd-kind-icon">Response</a>
+						<a href="../interfaces/_http_.iresponse.html" class="tsd-kind-icon">IResponse</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_http_.return.html" class="tsd-kind-icon">Return</a>
+						<a href="../interfaces/_http_.ireturn.html" class="tsd-kind-icon">IReturn</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_http_.iroute.html" class="tsd-kind-icon">IRoute</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_http_.html#autoload" class="tsd-kind-icon">Autoload</a>
@@ -933,6 +934,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_http_.html#get" class="tsd-kind-icon">Get</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/_http_.html#mixed" class="tsd-kind-icon">Mixed</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_http_.html#param" class="tsd-kind-icon">Param</a>

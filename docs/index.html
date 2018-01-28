@@ -65,45 +65,61 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="laf-http">LAF-HTTP</h1>
-				<p>Simple <em>express like</em> http router using decorators</p>
+				<p>WIP</p>
 				<h3 id="installation">Installation</h3>
-				<p>yarn:</p>
-				<pre><code class="lang-sh">$ yarn add laf-http
+				<pre><code class="lang-sh">$ npm add laf-http@next
 </code></pre>
 				<h3 id="example">Example</h3>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { app, Request, Response, Next } from <span class="hljs-string">"laf-http"</span>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> {
+    app,
+    Controller,
+    Delete,
+    Get,
+    IRequest,
+    IResponse, 
+    IRoute, 
+    Param,
+    Patch, 
+    Post, 
+    Put, 
+    Req, 
+    Use
+} <span class="hljs-keyword">from</span> <span class="hljs-string">"../http"</span>;
 
-<span class="hljs-keyword">const</span> auth = (req: Request, res: Response, next: Next) =&gt; {
-    next(); 
+<span class="hljs-keyword">const</span> getNumber = <span class="hljs-function">(<span class="hljs-params">req: IRequest, res: IResponse, next</span>) =&gt;</span> {
+    req.params.number = <span class="hljs-built_in">parseInt</span>(req.params.number, <span class="hljs-number">0</span>);
+    next({
+        hello: <span class="hljs-number">5</span>,
+    });
+
+};
+
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">"/foo"</span>)
+<span class="hljs-keyword">class</span> Test {
+
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">"/test/:number"</span>)
+    <span class="hljs-meta">@Use</span>(getNumber)
+    <span class="hljs-keyword">public</span> getTest( <span class="hljs-meta">@Req</span>() req: IRequest, <span class="hljs-meta">@Param</span>(<span class="hljs-string">"number"</span>) numb: <span class="hljs-built_in">number</span>) {
+
+        <span class="hljs-keyword">return</span> {
+            code: <span class="hljs-number">200</span>,
+            message: {
+                numb,
+                parms: req.params,
+                next: req.next
+            },
+        };
+    }
+
 }
 
-<span class="hljs-meta">@app</span>.Controller()
-<span class="hljs-keyword">class</span> Hello {
-    <span class="hljs-meta">@app</span>.Get(<span class="hljs-string">"/"</span>)
-    world(req: Request, res: Response) {
-        <span class="hljs-keyword">return</span> res.return(<span class="hljs-number">200</span>, {
-            message: <span class="hljs-string">"Hello world"</span>
-        })
-    }
-
-    <span class="hljs-meta">@app</span>.Get(<span class="hljs-string">"/echo/:name"</span>)
-    echo(req: Request, res: Response) {
-        <span class="hljs-keyword">return</span> res.return(<span class="hljs-number">200</span>, {
-            message: <span class="hljs-string">`Hello <span class="hljs-subst">${req.params.name}</span>`</span>
-        })
-    }
-
-    <span class="hljs-meta">@app</span>.Get(<span class="hljs-string">"/secure"</span>)
-    <span class="hljs-meta">@app</span>.Use(auth)
-    secure(req: Request, res: Response) {
-        <span class="hljs-keyword">return</span> res.return(<span class="hljs-number">200</span>, {
-            message: <span class="hljs-string">"Secure page"</span>
-        })
-    }
-}
-
+app.use(<span class="hljs-function">(<span class="hljs-params">req: Request, res: Response, next</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.info(<span class="hljs-string">"In middleware"</span>);
+    next();
+});
 
 app.listen(<span class="hljs-number">3000</span>);
+
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Server running on port 3000"</span>);
 </code></pre>
 			</div>
@@ -115,13 +131,7 @@ app.listen(<span class="hljs-number">3000</span>);
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_app_.html">"app"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_http_.html">"http"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_test_test_.html">"test/test"</a>
 					</li>
 				</ul>
 			</nav>

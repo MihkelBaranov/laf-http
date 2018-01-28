@@ -8,6 +8,6 @@ branches:
   only:
   - '2.0'
 script:
-  - yarn run build
+  - npm run build
 test: 
-  - yarn test
+  - npm test

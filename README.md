@@ -8,38 +8,55 @@ $ npm add laf-http@next
 
 ### Example
 ```typescript
-import { app, Request, Response, Next } from "laf-http"
+import {
+	app,
+	Controller,
+	Delete,
+	Get,
+    IRequest,
+    IResponse, 
+    IRoute, 
+    Param,
+    Patch, 
+    Post, 
+    Put, 
+    Req, 
+    Use
+} from "../http";
 
-const auth = (req: Request, res: Response, next: Next) => {
-    next(); 
+const getNumber = (req: IRequest, res: IResponse, next) => {
+	req.params.number = parseInt(req.params.number, 0);
+	next({
+		hello: 5,
+	});
+
+};
+
+@Controller("/foo")
+class Test {
+
+	@Get("/test/:number")
+	@Use(getNumber)
+	public getTest( @Req() req: IRequest, @Param("number") numb: number) {
+
+		return {
+			code: 200,
+			message: {
+				numb,
+                parms: req.params,
+                next: req.next
+			},
+		};
+	}
+
 }
 
-@app.Controller()
-class Hello {
-    @app.Get("/")
-    world(req: Request, res: Response) {
-        return res.return(200, {
-            message: "Hello world"
-        })
-    }
-
-    @app.Get("/echo/:name")
-    echo(req: Request, res: Response) {
-        return res.return(200, {
-            message: `Hello ${req.params.name}`
-        })
-    }
-
-    @app.Get("/secure")
-    @app.Use(auth)
-    secure(req: Request, res: Response) {
-        return res.return(200, {
-            message: "Secure page"
-        })
-    }
-}
-
+app.use((req: Request, res: Response, next) => {
+	console.info("In middleware");
+	next();
+});
 
 app.listen(3000);
+
 console.log("Server running on port 3000");
 ```

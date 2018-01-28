@@ -1,122 +1,86 @@
-import test from 'ava';
-import { app, Get, Post, Put, Patch, Delete, Controller, Use, Request, Response } from '../http';
-import * as supertest from 'supertest-as-promised';
+import test from "ava";
+import * as supertest from "supertest";
+// tslint:disable-next-line:max-line-length
+import { app, Controller, Delete, Get, HttpMethodsEnum, IRequest, IResponse, IRoute, Param, Patch, Post, Put, Req, Use } from "../http";
 
-test('get', (t) => {
+test("get request", (t) => {
 	@Controller()
 	class Test {
-		@Get('/test')
-		getTest() { }
+		@Get("/test")
+		public getTest() {
+			// test
+			return {
+				code: 200,
+				message: 1,
+			};
+		}
 	}
 
-	t.is(app._routes.length, 1);
-	let route = app._routes[0];
-	t.is(route.name, 'getTest');
+	t.is(app.routes.length, 1);
+	const route: IRoute = app.routes[0];
+	t.is(route.name, "getTest");
 	t.is(typeof route.service, "function");
-	t.is(route.method, 'GET');
-	t.is(route.path, '/test');
+	t.is(route.method, HttpMethodsEnum.GET);
+	t.is(route.path, "/test");
 
-	app._routes = [];
+	app.routes = [];
+
 });
 
-
-test('multiple', (t) => {
+test("multiple", (t) => {
 	@Controller()
 	class Test {
-		@Get('/test')
-		getTest() { }
+		@Get("/test")
+		public getTest() {
+			// test
+		}
 
-		@Post('/test')
-		postTest() { }
+		@Post("/test")
+		public postTest() {
+			// test
+		}
 	}
-	t.is(app._routes.length, 2);
-	app._routes = [];
+	t.is(app.routes.length, 2);
+	t.is(app.routes[1].method, HttpMethodsEnum.POST);
+	app.routes = [];
 });
 
-test('controllerPath', (t) => {
-	@Controller('/v1')
-	class Test {
-		@Get('/test')
-		getTest() { };
-	}
-
-	t.is(app._routes[0].path, '/v1/test');
-	app._routes = [];
-});
-
-test('middleware method', (t) => {
-	const middleware = (req: Request, res: Response, next) => { }
-	@Controller('/v1')
-	class Test {
-
-		@Get('/test')
-		@Use(middleware)
-		getTest() { };
-
-	}
-
-	app.use((req: Request, res: Response) => { })
-
-	let route = app._routes[0];
-	t.is(route.path, '/v1/test');
-	t.is(route.middleware.length, 2);
-	app._routes = [];
-
-});
-
-test('middleware class method', (t) => {
-	const middleware = (req: Request, res: Response, next) => { }
-	@Controller('/v1')
-	@Use(middleware)
-	class Test {
-
-		@Get('/test')
-		@Use(middleware)
-		getTest() { };
-
-	}
-
-	let route = app._routes[0];
-	t.is(route.path, '/v1/test');
-	t.is(route.middleware.length, 2);
-	app._routes = [];
-
-});
-
-
-
-test('laf', (t) => {
-	const getNumber = (req: Request, res: Response, next) => {
-		req.params.number = parseInt(req.params.number)
+test("laf", (t) => {
+	const getNumber = (req: IRequest, res: IResponse, next) => {
+		req.params.number = parseInt(req.params.number, 0);
 		t.is(req.params.number, 10);
 		next({
-			hello: 5
+			hello: 5,
 		});
 
-	}
-	@Controller('/foo')
+	};
+
+	@Controller("/foo")
 	class Test {
 
-		@Get('/test/:number')
+		@Get("/test/:number")
 		@Use(getNumber)
-		getTest(req: Request, res: Response) {
+		public getTest( @Req() req: IRequest, @Param("number") numb: number) {
 			t.is(req.params.number, 10);
 			t.is(req.next.hello, 5);
 
-			res.return(200, "success")
-		};
+			t.is(req.next.hello, numb - req.next.hello);
+
+			return {
+				code: 200,
+				message: "Hello",
+			};
+		}
 
 	}
 
-	t.plan(3);
-
+	t.plan(4);
 
 	app.use((req: Request, res: Response, next) => {
-		console.log("In middleware");
-
+		console.info("In middleware");
 		next();
-	})
+	});
 
 	app.listen(3000);
-	return supertest(app.server).get('/foo/test/10').expect(200);
+	return supertest(app.server).get("/foo/test/10").expect(200);
 });

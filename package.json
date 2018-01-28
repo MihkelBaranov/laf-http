@@ -1,6 +1,6 @@
 {
   "name": "laf-http",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Lightweight express like http module for building rest api services",
   "main": "http.js",
   "types": "http.d.ts",
@@ -8,17 +8,18 @@
   "author": "Mihkel Baranov",
   "license": "MIT",
   "scripts": {
+    "dev": "tsc --watch",
     "build": "tsc",
     "test": "ava test/**/*.js",
-    "docs": "typedoc --out docs http.ts --exclude  --exclude \"test/*.ts\""
+    "docs": "typedoc --out docs http.ts --exclude \"test/*.ts\""
   },
   "devDependencies": {
-    "@types/node": "^7.0.0",
-    "@types/supertest-as-promised": "^2.0.34",
+    "@types/node": "^8.0.0",
     "ava": "^0.21.0",
     "supertest": "^3.0.0",
-    "supertest-as-promised": "^4.0.2",
-    "typescript": "2.3.2"
+    "tslint": "^5.9.1",
+    "tslint-sonarts": "^1.4.0",
+    "typescript": "^2.6.2"
   },
   "dependencies": {
     "reflect-metadata": "^0.1.10"
