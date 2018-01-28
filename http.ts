@@ -31,7 +31,8 @@ export interface IRequest extends IncomingMessage {
 
 export interface IReturn {
 	code: number;
-	message: any;
+	message: object | string | Buffer;
+	headers?: object;
 }
 
 export interface INext {
@@ -50,16 +51,15 @@ export enum HttpMethodsEnum {
 export enum Constants {
 	INVALID_ROUTE = "Invalid route",
 	NO_RESPONSE = "No response",
+	JSON_RESPONSE = "application/json",
 }
 
 export class Http {
-
 	public server: Server;
 	public routes: any[] = [];
 
 	private next: boolean = false;
 	private middleware: void[] = [];
-
 	public Controller(path: string = "") {
 		return (target) => {
 			const controllerMiddleware = Reflect.getMetadata("route:middleware", target) || [];
@@ -218,7 +218,7 @@ export class Http {
 
 			const args = this.get_arguments(req.route.params, req);
 
-			const result = await req.route.service(...args);
+			const result: IReturn = await req.route.service(...args);
 
 			if (result) {
 				res.return(result.code, result);
@@ -284,17 +284,20 @@ export class Http {
 	}
 
 	private _return(res: IResponse): any {
-		return (status = 200, message) => {
-			switch (typeof message) {
-				case "object":
-					res.writeHead(status, { "Content-Type": "application/json" });
-					res.write(JSON.stringify(message));
-					break;
-				default:
-					res.writeHead(status, { "Content-Type": "text/plain" });
-					res.write(message);
+		return (status, response) => {
+			let headers = {
+				"Content-Type": Constants.JSON_RESPONSE,
+			};
+
+			if (response.headers) {
+				headers = Object.assign(headers, response.headers);
 			}
-			return res.end();
+
+			const body = headers["Content-Type"] === Constants.JSON_RESPONSE ? JSON.stringify(response) : response.message;
+
+			res.writeHead(status, headers);
+			res.write(body);
+			res.end();
 		};
 	}
 

@@ -38,7 +38,8 @@ jspm_packages
 
 test/test.js
 test/test.d.ts
-
+truck-1.png
+u-a-1.mp3
 .vscode
 app.js
 app.ts

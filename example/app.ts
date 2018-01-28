@@ -1,40 +1,52 @@
+import * as fs from "fs";
 import {
 	app,
 	Controller,
-	Delete,
-	Get,
-	HttpMethodsEnum, IRequest, IResponse, IRoute, Param, Patch, Post, Put, Req, Use
-} from "../http";
-
-const getNumber = (req: IRequest, res: IResponse, next) => {
-	req.params.number = parseInt(req.params.number, 0);
-	next({
-		hello: 5,
-	});
-
-};
+	Delete, Get, HttpMethodsEnum, IRequest, IResponse, IReturn, IRoute, Param, Patch, Post, Put, Req, Use,
+} from "./http";
 
 @Controller("/foo")
 class Test {
 
 	@Get("/test/:number")
-	@Use(getNumber)
-	public getTest( @Req() req: IRequest, @Param("number") numb: number) {
-
+	public getTest( @Req() req: IRequest, @Param("number") numb: number): IReturn {
+		const audio = fs.readFileSync("./u-a-1.mp3");
+		const stat = fs.statSync("./u-a-1.mp3");
 		return {
 			code: 200,
 			message: {
-				numb,
-				parms: req.params,
+				params: req.params,
 			},
 		};
 	}
 
+	@Get("/image")
+	public image(): IReturn {
+		const image = fs.readFileSync("./truck-1.png");
+		return {
+			code: 200,
+			headers: {
+				"Content-Type": "image/png",
+			},
+			message: image,
+		};
+	}
+
+	@Get("/audio")
+	public audio(): IReturn {
+		const audio = fs.readFileSync("./u-a-1.mp3");
+		const stat = fs.statSync("./u-a-1.mp3");
+		return {
+			code: 200,
+			headers: {
+				"Accept-Ranges": "bytes",
+				"Content-Length": stat.size,
+				"Content-Type": "audio/mp3",
+			},
+			message: audio,
+
+		};
+	}
 }
 
-app.use((req: Request, res: Response, next) => {
-	console.info("In middleware");
-	next();
-});
-
-app.listen(3000);
+app.listen(8800);

@@ -45,7 +45,30 @@ test("multiple", (t) => {
 	app.routes = [];
 });
 
-test("laf", (t) => {
+test("laf:json", async (t) => {
+	@Controller()
+	class Test {
+
+		@Get("/json")
+		public json( @Req() req: IRequest, @Param("number") numb: number) {
+			return {
+				code: 200,
+				message: {
+					data: true,
+				},
+			};
+		}
+	}
+	t.plan(2);
+	app.listen(3000);
+	const res: any = await supertest(app.server).get("/json").expect(200).expect("Content-Type", /json/);
+
+	t.is(res.status, 200);
+	t.is(res.body.message.data, true);
+
+});
+
+test("laf:html-with-middleware/param", async (t) => {
 	const getNumber = (req: IRequest, res: IResponse, next) => {
 		req.params.number = parseInt(req.params.number, 0);
 		t.is(req.params.number, 10);
@@ -55,12 +78,12 @@ test("laf", (t) => {
 
 	};
 
-	@Controller("/foo")
+	@Controller("/test")
 	class Test {
 
-		@Get("/test/:number")
+		@Get("/html/:number")
 		@Use(getNumber)
-		public getTest( @Req() req: IRequest, @Param("number") numb: number) {
+		public html( @Req() req: IRequest, @Param("number") numb: number) {
 			t.is(req.params.number, 10);
 			t.is(req.next.hello, 5);
 
@@ -68,19 +91,23 @@ test("laf", (t) => {
 
 			return {
 				code: 200,
-				message: "Hello",
+				headers: {
+					"Content-Type": "text/html",
+				},
+				message: "<h1>Hello<h1>",
 			};
 		}
 
 	}
 
-	t.plan(4);
+	t.plan(6);
 
-	app.use((req: Request, res: Response, next) => {
-		console.info("In middleware");
-		next();
-	});
+	if (!app.server) {
+		app.listen(3000);
+	}
 
-	app.listen(3000);
-	return supertest(app.server).get("/foo/test/10").expect(200);
+	const r: any = await supertest(app.server).get("/test/html/10").expect(200).expect("Content-Type", /html/);
+
+	t.is(r.status, 200);
+	t.is(r.text, "<h1>Hello<h1>");
 });

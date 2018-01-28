@@ -26,7 +26,8 @@ export interface IRequest extends IncomingMessage {
 }
 export interface IReturn {
     code: number;
-    message: any;
+    message: object | string | Buffer;
+    headers?: object;
 }
 export interface INext {
     (data?: {}): any;
@@ -42,6 +43,7 @@ export declare enum HttpMethodsEnum {
 export declare enum Constants {
     INVALID_ROUTE = "Invalid route",
     NO_RESPONSE = "No response",
+    JSON_RESPONSE = "application/json",
 }
 export declare class Http {
     server: Server;

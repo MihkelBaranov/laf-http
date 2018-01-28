@@ -25,6 +25,7 @@ var Constants;
 (function (Constants) {
     Constants["INVALID_ROUTE"] = "Invalid route";
     Constants["NO_RESPONSE"] = "No response";
+    Constants["JSON_RESPONSE"] = "application/json";
 })(Constants = exports.Constants || (exports.Constants = {}));
 class Http {
     constructor() {
@@ -216,17 +217,17 @@ class Http {
         });
     }
     _return(res) {
-        return (status = 200, message) => {
-            switch (typeof message) {
-                case "object":
-                    res.writeHead(status, { "Content-Type": "application/json" });
-                    res.write(JSON.stringify(message));
-                    break;
-                default:
-                    res.writeHead(status, { "Content-Type": "text/plain" });
-                    res.write(message);
+        return (status, response) => {
+            let headers = {
+                "Content-Type": Constants.JSON_RESPONSE,
+            };
+            if (response.headers) {
+                headers = Object.assign(headers, response.headers);
             }
-            return res.end();
+            const body = headers["Content-Type"] === Constants.JSON_RESPONSE ? JSON.stringify(response) : response.message;
+            res.writeHead(status, headers);
+            res.write(body);
+            res.end();
         };
     }
     inject(fn) {
