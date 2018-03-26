@@ -52,6 +52,7 @@ export enum Constants {
 	INVALID_ROUTE = "Invalid route",
 	NO_RESPONSE = "No response",
 	JSON_RESPONSE = "application/json",
+	ROUTE_DATA = "route:data",
 }
 
 export class Http {
@@ -63,7 +64,7 @@ export class Http {
 	public Controller(path: string = "") {
 		return (target) => {
 			const controllerMiddleware = Reflect.getMetadata("route:middleware", target) || [];
-			const routes = Reflect.getMetadata("route:data", target.prototype) || [];
+			const routes = Reflect.getMetadata(Constants.ROUTE_DATA, target.prototype) || [];
 
 			for (const route of routes) {
 				const routeMiddleware = Reflect.getMetadata(`route:middleware_${route.name}`, target.prototype) || [];
@@ -79,7 +80,7 @@ export class Http {
 				});
 			}
 
-			Reflect.defineMetadata("route:data", this.routes, target);
+			Reflect.defineMetadata(Constants.ROUTE_DATA, this.routes, target);
 		};
 	}
 
@@ -99,9 +100,9 @@ export class Http {
 
 	public Route(method, path) {
 		return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
-			const meta = Reflect.getMetadata("route:data", target) || [];
+			const meta = Reflect.getMetadata(Constants.ROUTE_DATA, target) || [];
 			meta.push({ method, path, name, descriptor });
-			Reflect.defineMetadata("route:data", meta, target);
+			Reflect.defineMetadata(Constants.ROUTE_DATA, meta, target);
 		};
 	}
 
@@ -296,6 +297,11 @@ export class Http {
 			const body = headers["Content-Type"] === Constants.JSON_RESPONSE ? JSON.stringify(response) : response.message;
 
 			res.writeHead(status, headers);
+			if (response.stream) {
+				response.stream.pipe(res);
+				return;
+			}
+
 			res.write(body);
 			res.end();
 		};

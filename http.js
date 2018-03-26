@@ -26,6 +26,7 @@ var Constants;
     Constants["INVALID_ROUTE"] = "Invalid route";
     Constants["NO_RESPONSE"] = "No response";
     Constants["JSON_RESPONSE"] = "application/json";
+    Constants["ROUTE_DATA"] = "route:data";
 })(Constants = exports.Constants || (exports.Constants = {}));
 class Http {
     constructor() {
@@ -36,7 +37,7 @@ class Http {
     Controller(path = "") {
         return (target) => {
             const controllerMiddleware = Reflect.getMetadata("route:middleware", target) || [];
-            const routes = Reflect.getMetadata("route:data", target.prototype) || [];
+            const routes = Reflect.getMetadata(Constants.ROUTE_DATA, target.prototype) || [];
             for (const route of routes) {
                 const routeMiddleware = Reflect.getMetadata(`route:middleware_${route.name}`, target.prototype) || [];
                 const params = Reflect.getMetadata(`route:params_${route.name}`, target.prototype) || [];
@@ -49,7 +50,7 @@ class Http {
                     service: route.descriptor.value,
                 });
             }
-            Reflect.defineMetadata("route:data", this.routes, target);
+            Reflect.defineMetadata(Constants.ROUTE_DATA, this.routes, target);
         };
     }
     use(middleware) {
@@ -65,9 +66,9 @@ class Http {
     }
     Route(method, path) {
         return (target, name, descriptor) => {
-            const meta = Reflect.getMetadata("route:data", target) || [];
+            const meta = Reflect.getMetadata(Constants.ROUTE_DATA, target) || [];
             meta.push({ method, path, name, descriptor });
-            Reflect.defineMetadata("route:data", meta, target);
+            Reflect.defineMetadata(Constants.ROUTE_DATA, meta, target);
         };
     }
     Param(key) {
@@ -226,6 +227,10 @@ class Http {
             }
             const body = headers["Content-Type"] === Constants.JSON_RESPONSE ? JSON.stringify(response) : response.message;
             res.writeHead(status, headers);
+            if (response.stream) {
+                response.stream.pipe(res);
+                return;
+            }
             res.write(body);
             res.end();
         };

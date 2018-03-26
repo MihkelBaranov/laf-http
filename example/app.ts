@@ -3,13 +3,13 @@ import {
 	app,
 	Controller,
 	Delete, Get, HttpMethodsEnum, IRequest, IResponse, IReturn, IRoute, Param, Patch, Post, Put, Req, Use,
-} from "./http";
+} from "../http";
 
 @Controller("/foo")
 class Test {
 
 	@Get("/test/:number")
-	public getTest( @Req() req: IRequest, @Param("number") numb: number): IReturn {
+	public getTest(@Req() req: IRequest, @Param("number") numb: number): IReturn {
 		const audio = fs.readFileSync("./u-a-1.mp3");
 		const stat = fs.statSync("./u-a-1.mp3");
 		return {

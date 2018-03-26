@@ -44,6 +44,7 @@ export declare enum Constants {
     INVALID_ROUTE = "Invalid route",
     NO_RESPONSE = "No response",
     JSON_RESPONSE = "application/json",
+    ROUTE_DATA = "route:data",
 }
 export declare class Http {
     server: Server;
