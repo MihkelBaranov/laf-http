@@ -6,7 +6,7 @@ node_js:
   
 branches:
   only:
-  - 'next'
+  - '4.0-dev'
 script:
   - npm run build
   - npm test
