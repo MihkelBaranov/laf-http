@@ -4,12 +4,11 @@
         "target": "es2015",
         "module": "commonjs",
         "experimentalDecorators": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "declaration": true,
         "watch": false
     },
     "exclude": [
         "node_modules",
-        "example"
     ]
 }

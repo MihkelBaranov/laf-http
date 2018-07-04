@@ -2,13 +2,18 @@
 import { IncomingMessage, Server, ServerResponse } from "http";
 import "reflect-metadata";
 export interface IResponse extends ServerResponse {
-    return(status?: any, message?: any): void;
+    return(status?: number, message?: Object): void;
+}
+export interface IParam {
+    index?: number;
+    name?: string;
+    fn: Function;
 }
 export interface IRoute {
     method: number;
-    middleware: void[];
+    middleware: Function[];
     name: string;
-    params: object;
+    params: IParam[];
     path: string;
     service: any;
 }
@@ -30,7 +35,7 @@ export interface IReturn {
     headers?: object;
 }
 export interface INext {
-    (data?: {}): any;
+    (data?: object): Function;
 }
 export declare enum HttpMethodsEnum {
     GET = 0,
@@ -38,46 +43,44 @@ export declare enum HttpMethodsEnum {
     PUT = 2,
     DELETE = 3,
     PATCH = 4,
-    MIXED = 5,
+    MIXED = 5
 }
 export declare enum Constants {
     INVALID_ROUTE = "Invalid route",
     NO_RESPONSE = "No response",
     JSON_RESPONSE = "application/json",
-    ROUTE_DATA = "route:data",
+    ROUTE_DATA = "route:data"
 }
 export declare class Http {
     server: Server;
     routes: any[];
     private next;
     private middleware;
-    Controller(path?: string): (target: any) => void;
-    use(middleware: any): void;
+    Controller(path?: string): (target: Function) => void;
+    use(middleware: Function): void;
     listen(port: number): void;
     Use(...middlewares: any[]): any;
-    Route(method: any, path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    Param(key?: any): (target: any, name: string, index: number) => void;
-    Query(key?: any): (target: any, name: string, index: number) => void;
-    Body(): (target: any, name: string, index: number) => void;
-    Response(): (target: any, name: string, index: number) => void;
-    Request(): (target: any, name: string, index: number) => void;
-    Queries(): (target: any, name: string, index: number) => void;
-    Params(): (target: any, name: string, index: number) => void;
-    Get(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    Post(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    Put(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    Patch(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    Delete(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    Mixed(path: any): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
-    autoload(source: any): void;
-    private get_arguments(params, req);
-    private handle_request(req, res);
-    private execute(Middleware, req, res);
-    private run(middleware, req, res);
-    private slashed(path);
-    private find_route(req);
-    private _return(res);
-    private inject(fn);
+    Route(method: number, path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Param(key?: string): (target: Function, name: string, index: number) => void;
+    Query(key?: string): (target: Function, name: string, index: number) => void;
+    Body(key?: string): (target: Function, name: string, index: number) => void;
+    Response(): (target: Function, name: string, index: number) => void;
+    Request(): (target: Function, name: string, index: number) => void;
+    Get(path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Post(path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Put(path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Patch(path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Delete(path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    Mixed(path: string): (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => void;
+    autoload(source: string): void;
+    private getArguments;
+    private handleRequest;
+    private execute;
+    private run;
+    private slashed;
+    private findRoute;
+    private _return;
+    private inject;
 }
 export declare const app: Http;
 export declare const Get: any;
@@ -92,8 +95,8 @@ export declare const Controller: any;
 export declare const Autoload: any;
 export declare const Body: any;
 export declare const Param: any;
-export declare const Params: any;
 export declare const Query: any;
-export declare const Queries: any;
 export declare const Req: any;
 export declare const Res: any;
+export declare const Queries: any;
+export declare const Params: any;

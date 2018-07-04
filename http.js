@@ -57,7 +57,7 @@ class Http {
         this.middleware.push(middleware);
     }
     listen(port) {
-        this.server = http_1.createServer(this.handle_request.bind(this)).listen(port);
+        this.server = http_1.createServer(this.handleRequest.bind(this)).listen(port);
     }
     Use(...middlewares) {
         return (target, propertyKey, descriptor) => {
@@ -77,20 +77,14 @@ class Http {
     Query(key) {
         return this.inject((req) => !key ? req.query : req.query[key]);
     }
-    Body() {
-        return this.inject((req) => req.body);
+    Body(key) {
+        return this.inject((req) => !key ? req.body : req.body[key]);
     }
     Response() {
         return this.inject((req) => req.response);
     }
     Request() {
         return this.inject((req) => req.request);
-    }
-    Queries() {
-        return this.Query();
-    }
-    Params() {
-        return this.Param();
     }
     Get(path) {
         return this.Route(HttpMethodsEnum.GET, path);
@@ -117,7 +111,7 @@ class Http {
             }
         });
     }
-    get_arguments(params, req) {
+    getArguments(params, req) {
         let args = [req];
         if (params) {
             args = [];
@@ -132,7 +126,7 @@ class Http {
         }
         return args;
     }
-    handle_request(req, res) {
+    handleRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Init request object
@@ -146,7 +140,7 @@ class Http {
                 if (this.middleware.length > 0) {
                     yield this.run(this.middleware, req, res);
                 }
-                req.route = this.find_route(req);
+                req.route = this.findRoute(req);
                 if (!req.route) {
                     throw Constants.INVALID_ROUTE;
                 }
@@ -156,7 +150,7 @@ class Http {
                 if (!this.next) {
                     return;
                 }
-                const args = this.get_arguments(req.route.params, req);
+                const args = this.getArguments(req.route.params, req);
                 const result = yield req.route.service(...args);
                 if (result) {
                     res.return(result.code, result);
@@ -199,7 +193,7 @@ class Http {
     slashed(path) {
         return path.endsWith("/") ? path.slice(0, -1) : path;
     }
-    find_route(req) {
+    findRoute(req) {
         return this.routes.find((route) => {
             const path = this.slashed(route.path);
             const regex = new RegExp(path.replace(/:[^\s/]+/g, "([^/\]+)"));
@@ -257,8 +251,9 @@ exports.Controller = exports.app.Controller.bind(exports.app);
 exports.Autoload = exports.app.autoload.bind(exports.app);
 exports.Body = exports.app.Body.bind(exports.app);
 exports.Param = exports.app.Param.bind(exports.app);
-exports.Params = exports.app.Params.bind(exports.app);
 exports.Query = exports.app.Query.bind(exports.app);
-exports.Queries = exports.app.Queries.bind(exports.app);
 exports.Req = exports.app.Request.bind(exports.app);
 exports.Res = exports.app.Response.bind(exports.app);
+// Will be removed in a future release
+exports.Queries = exports.app.Query.bind(exports.app);
+exports.Params = exports.app.Param.bind(exports.app);

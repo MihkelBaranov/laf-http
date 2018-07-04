@@ -4,14 +4,19 @@ import "reflect-metadata";
 import { parse } from "url";
 
 export interface IResponse extends ServerResponse {
-	return(status?, message?): void;
+	return(status?: number, message?: Object): void;
+}
+export interface IParam {
+	index?: number;
+	name?: string;
+	fn: Function
 }
 
 export interface IRoute {
 	method: number;
-	middleware: void[];
+	middleware: Function[];
 	name: string;
-	params: object;
+	params: IParam[];
 	path: string;
 	service: any;
 }
@@ -36,7 +41,7 @@ export interface IReturn {
 }
 
 export interface INext {
-	(data?: {});
+	(data?: object): Function;
 }
 
 export enum HttpMethodsEnum {
@@ -60,16 +65,15 @@ export class Http {
 	public routes: any[] = [];
 
 	private next: boolean = false;
-	private middleware: void[] = [];
+	private middleware: Function[] = [];
 	public Controller(path: string = "") {
-		return (target) => {
+		return (target: Function) => {
 			const controllerMiddleware = Reflect.getMetadata("route:middleware", target) || [];
 			const routes = Reflect.getMetadata(Constants.ROUTE_DATA, target.prototype) || [];
 
 			for (const route of routes) {
 				const routeMiddleware = Reflect.getMetadata(`route:middleware_${route.name}`, target.prototype) || [];
 				const params = Reflect.getMetadata(`route:params_${route.name}`, target.prototype) || [];
-
 				this.routes.push({
 					method: route.method,
 					middleware: [...controllerMiddleware, ...routeMiddleware],
@@ -84,12 +88,12 @@ export class Http {
 		};
 	}
 
-	public use(middleware) {
+	public use(middleware: Function) {
 		this.middleware.push(middleware);
 	}
 
 	public listen(port: number) {
-		this.server = createServer(this.handle_request.bind(this)).listen(port);
+		this.server = createServer(this.handleRequest.bind(this)).listen(port);
 	}
 
 	public Use(...middlewares: any[]): any {
@@ -98,7 +102,7 @@ export class Http {
 		};
 	}
 
-	public Route(method, path) {
+	public Route(method: number, path: string) {
 		return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
 			const meta = Reflect.getMetadata(Constants.ROUTE_DATA, target) || [];
 			meta.push({ method, path, name, descriptor });
@@ -106,59 +110,51 @@ export class Http {
 		};
 	}
 
-	public Param(key?) {
-		return this.inject((req) => !key ? req.params : req.params[key]);
+	public Param(key?: string) {
+		return this.inject((req: IRequest) => !key ? req.params : req.params[key]);
 	}
 
-	public Query(key?) {
-		return this.inject((req) => !key ? req.query : req.query[key]);
+	public Query(key?: string) {
+		return this.inject((req: IRequest) => !key ? req.query : req.query[key]);
 	}
 
-	public Body() {
-		return this.inject((req) => req.body);
+	public Body(key?: string) {
+		return this.inject((req: IRequest) => !key ? req.body : req.body[key]);
 	}
 
 	public Response() {
-		return this.inject((req) => req.response);
+		return this.inject((req: IRequest) => req.response);
 	}
 
 	public Request() {
-		return this.inject((req) => req.request);
+		return this.inject((req: IRequest) => req.request);
 	}
 
-	public Queries() {
-		return this.Query();
-	}
-
-	public Params() {
-		return this.Param();
-	}
-
-	public Get(path) {
+	public Get(path: string) {
 		return this.Route(HttpMethodsEnum.GET, path);
 	}
 
-	public Post(path) {
+	public Post(path: string) {
 		return this.Route(HttpMethodsEnum.POST, path);
 	}
 
-	public Put(path) {
+	public Put(path: string) {
 		return this.Route(HttpMethodsEnum.PUT, path);
 	}
 
-	public Patch(path) {
+	public Patch(path: string) {
 		return this.Route(HttpMethodsEnum.PATCH, path);
 	}
 
-	public Delete(path) {
+	public Delete(path: string) {
 		return this.Route(HttpMethodsEnum.DELETE, path);
 	}
 
-	public Mixed(path) {
+	public Mixed(path: string) {
 		return this.Route(HttpMethodsEnum.MIXED, path);
 	}
 
-	public autoload(source) {
+	public autoload(source: string) {
 		fs.readdirSync(source).map((file) => {
 			if (file.endsWith(".js")) {
 				require(source + "/" + file.replace(/\.[^.$]+$/, ""));
@@ -166,7 +162,7 @@ export class Http {
 		});
 	}
 
-	private get_arguments(params, req) {
+	private getArguments(params: IParam[], req: IRequest) {
 		let args = [req];
 
 		if (params) {
@@ -186,7 +182,7 @@ export class Http {
 		return args;
 	}
 
-	private async handle_request(req: IRequest, res: IResponse) {
+	private async handleRequest(req: IRequest, res: IResponse) {
 		try {
 			// Init request object
 			req.params = {};
@@ -203,7 +199,7 @@ export class Http {
 				await this.run(this.middleware, req, res);
 			}
 
-			req.route = this.find_route(req);
+			req.route = this.findRoute(req);
 
 			if (!req.route) {
 				throw Constants.INVALID_ROUTE;
@@ -217,7 +213,7 @@ export class Http {
 				return;
 			}
 
-			const args = this.get_arguments(req.route.params, req);
+			const args = this.getArguments(req.route.params, req);
 
 			const result: IReturn = await req.route.service(...args);
 
@@ -240,9 +236,9 @@ export class Http {
 
 	}
 
-	private execute(Middleware, req: IRequest, res: IResponse): Promise<string> {
+	private execute(Middleware: Function, req: IRequest, res: IResponse): Promise<string> {
 		return new Promise((resolve, reject) => {
-			Middleware(req, res, (data?) => {
+			Middleware(req, res, (data?: string | number | object | string[]) => {
 				this.next = true;
 				req.next = data || {};
 				return resolve();
@@ -250,7 +246,7 @@ export class Http {
 		});
 	}
 
-	private async run(middleware, req, res) {
+	private async run(middleware: Function[], req: IRequest, res: IResponse) {
 		return await Promise.all(middleware.map(async (fn) => {
 			this.next = false;
 			if (fn instanceof Function) {
@@ -259,11 +255,11 @@ export class Http {
 		}));
 	}
 
-	private slashed(path): string {
+	private slashed(path: string): string {
 		return path.endsWith("/") ? path.slice(0, -1) : path;
 	}
 
-	private find_route(req: IRequest): IRoute {
+	private findRoute(req: IRequest): IRoute {
 		return this.routes.find((route) => {
 
 			const path = this.slashed(route.path);
@@ -271,7 +267,7 @@ export class Http {
 			const matches = this.slashed(req.url.split("?")[0]).match(regex);
 			const params = path.match(/:[^\s/]+/g);
 			if (matches && matches[0] === matches.input
-				&& (route.method === HttpMethodsEnum[req.method]
+				&& (route.method === HttpMethodsEnum[<any>req.method]
 					|| route.method === HttpMethodsEnum.MIXED)) {
 				for (const k in params) {
 					if (params[k]) {
@@ -285,7 +281,7 @@ export class Http {
 	}
 
 	private _return(res: IResponse): any {
-		return (status, response) => {
+		return (status: number, response: { headers?: object, message: void, stream: fs.ReadStream }) => {
 			let headers = {
 				"Content-Type": Constants.JSON_RESPONSE,
 			};
@@ -307,8 +303,8 @@ export class Http {
 		};
 	}
 
-	private inject(fn) {
-		return (target: any, name: string, index: number) => {
+	private inject(fn: Function) {
+		return (target: Function, name: string, index: number) => {
 			const meta = Reflect.getMetadata(`route:params_${name}`, target) || [];
 			meta.push({ index, name, fn });
 			Reflect.defineMetadata(`route:params_${name}`, meta, target);
@@ -329,8 +325,9 @@ export const Controller = app.Controller.bind(app);
 export const Autoload = app.autoload.bind(app);
 export const Body = app.Body.bind(app);
 export const Param = app.Param.bind(app);
-export const Params = app.Params.bind(app);
 export const Query = app.Query.bind(app);
-export const Queries = app.Queries.bind(app);
 export const Req = app.Request.bind(app);
 export const Res = app.Response.bind(app);
+// Will be removed in a future release
+export const Queries = app.Query.bind(app);
+export const Params = app.Param.bind(app);

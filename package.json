@@ -1,6 +1,6 @@
 {
   "name": "laf-http",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "Lightweight express like http module for building rest api services",
   "main": "http.js",
   "types": "http.d.ts",
@@ -14,14 +14,14 @@
     "docs": "typedoc --out docs http.ts --exclude \"test/*.ts\""
   },
   "devDependencies": {
-    "@types/node": "^8.0.0",
+    "@types/node": "^10.5.1",
     "ava": "^0.21.0",
-    "supertest": "^3.0.0",
+    "supertest": "^3.1.0",
     "tslint": "^5.9.1",
     "tslint-sonarts": "^1.4.0",
-    "typescript": "^2.6.2"
+    "typescript": "^2.9.2",
+    "reflect-metadata": "^0.1.12",
+    "@types/supertest": "^2.0.4"
   },
-  "dependencies": {
-    "reflect-metadata": "^0.1.10"
-  }
+  "dependencies": {}
 }
