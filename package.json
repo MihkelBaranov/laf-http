@@ -20,8 +20,9 @@
     "tslint": "^5.9.1",
     "tslint-sonarts": "^1.4.0",
     "typescript": "^2.9.2",
-    "reflect-metadata": "^0.1.12",
     "@types/supertest": "^2.0.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "reflect-metadata": "^0.1.12"
+  }
 }
