@@ -282,7 +282,7 @@ export class Http {
 
 	private _return(res: IResponse): any {
 		return (status: number, response: { headers?: object, message: void, stream: fs.ReadStream }) => {
-			let headers = {
+			let headers: any = {
 				"Content-Type": Constants.JSON_RESPONSE,
 			};
 
@@ -298,8 +298,10 @@ export class Http {
 				return;
 			}
 
-			res.write(body);
-			res.end();
+			if (headers['Connection'] !== "keep-alive") {
+				res.write(body);
+				res.end();
+			}
 		};
 	}
 

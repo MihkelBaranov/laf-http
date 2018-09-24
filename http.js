@@ -225,8 +225,10 @@ class Http {
                 response.stream.pipe(res);
                 return;
             }
-            res.write(body);
-            res.end();
+            if (headers['Connection'] !== "keep-alive") {
+                res.write(body);
+                res.end();
+            }
         };
     }
     inject(fn) {
